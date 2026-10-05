@@ -1,0 +1,344 @@
+\documentclass[11pt,landscape]{article}
+
+%===========================================================
+% Encoding and Fonts (for XeLaTeX)
+%===========================================================
+\usepackage{fontspec}
+\setmainfont{Latin Modern Roman}[SizeFeatures={Size=16}]
+
+%===========================================================
+% Page layout (tighter margins)
+%===========================================================
+\usepackage[paper=letterpaper,left=0.20in,right=0.20in,top=0.20in,bottom=0.20in]{geometry}
+\usepackage{multicol}
+\raggedcolumns
+\setlength{\columnsep}{0.08in}
+\setlength{\columnseprule}{0.4pt}
+
+%===========================================================
+% Colors
+%===========================================================
+\usepackage[table]{xcolor}
+\definecolor{sectioncolor}{RGB}{0,102,204}
+\definecolor{tablegray}{gray}{0.90}
+
+%===========================================================
+% Compact lists
+%===========================================================
+\usepackage{enumitem}
+\setlist[itemize]{nosep,leftmargin=*,itemsep=0pt,topsep=0pt,parsep=0pt,partopsep=0pt}
+\setlist[enumerate]{nosep,leftmargin=*,itemsep=0pt,topsep=0pt,parsep=0pt,partopsep=0pt}
+\setlength{\multicolsep}{0.1em}
+
+%===========================================================
+% Colored section headings (minimal vertical spacing)
+%===========================================================
+\usepackage{titlesec}
+\titleformat{\section}
+  {\bfseries\color{sectioncolor}\large}
+  {}{0pt}{}
+\titlespacing*{\section}{0pt}{0.2ex}{0.2ex}
+\setcounter{secnumdepth}{0}
+
+%===========================================================
+% Math, tables, etc.
+%===========================================================
+\usepackage{amsmath,amssymb,booktabs,tabularx,array,makecell,caption}
+\renewcommand{\arraystretch}{1.0}
+\setlength{\tabcolsep}{1pt}
+
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+
+%===========================================================
+% No page numbers, zero paragraph spacing
+%===========================================================
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+\linespread{0.9}
+
+%===========================================================
+% Begin Document
+%===========================================================
+\begin{document}
+\scriptsize\bfseries\boldmath
+
+%===========================================================
+% THREE-COLUMN NOTES
+%===========================================================
+\begin{multicols}{3}
+
+%-----------------------------------------------------------
+% RANDOM VARIABLES, PMF/PDF, CDF
+%-----------------------------------------------------------
+\section{Random Variables \& CDFs}
+\begin{itemize}
+  \item Random variable (RV): real-valued function on sample space.
+  \item Discrete RV: support finite or countable; probabilities via p.m.f.\ $\mathbf{p(x)=P(X=x)}$, $p(x)\ge0$, $\sum_x p(x)=1$.
+  \item Continuous RV: support uncountable; probabilities via p.d.f.\ $\mathbf{f(x)\ge0}$, $\mathbf{\int_{-\infty}^{\infty} f(x)\,dx=1}$, and $\mathbf{P(a<X<b)=\int_a^b f(x)\,dx}$.
+  \item CDF (both): $\mathbf{F(x)=P(X\le x)}$. Discrete: $F(x)=\sum_{t\le x}p(t)$. Continuous: $F(x)=\int_{-\infty}^x f(t)\,dt$ and $f(x)=F'(x)$ where differentiable.
+  \item Key CDF properties:
+    \begin{itemize}
+      \item Nondecreasing, right-continuous; limits $0$ and $1$ at $\pm\infty$.
+      \item $\mathbf{P(a<X\le b)=F(b)-F(a)}$.
+      \item Discrete point mass at $b$: $\mathbf{P(X=b)=F(b)-\lim_{x\to b^-}F(x)}$ (jump height).
+    \end{itemize}
+  \item Graph shapes:
+    \begin{itemize}
+      \item Discrete PMF: vertical spikes at support values.
+      \item Discrete CDF: staircase/step function with jumps of size $P(X=x)$.
+      \item Continuous PDF: smooth curve (area under curve $=1$).
+      \item Continuous CDF: smooth, non-decreasing from $0$ to $1$.
+    \end{itemize}
+  \item From CDF to probabilities: $P(X>a)=1-F(a)$, $P(a<X\le b)=F(b)-F(a)$.
+\end{itemize}
+
+%-----------------------------------------------------------
+% COUNTING & EQUALLY LIKELY MODELS
+%-----------------------------------------------------------
+\section{Counting \& Equally Likely}
+\begin{itemize}
+  \item Multiplication principle: $m$ ways for step 1 and $n$ for step 2 $\Rightarrow$ $mn$ ordered outcomes; extend to more steps.
+  \item Permutations (distinct): $\mathbf{n!=n(n-1)\cdots1}$ ways to order $n$ distinct objects.
+  \item Permutations with repeats: $\mathbf{n!/(n_1!\cdots n_r!)}$, with $\sum_i n_i=n$.
+  \item Combinations: $\mathbf{\binom{n}{r}=n!/[r!(n-r)!]}$ ways to choose $r$ from $n$ (unordered).
+  \item Multinomial coefficient: $\mathbf{\binom{n}{n_1,\dots,n_r}=n!/(n_1!\cdots n_r!)}$.
+  \item Equally likely sample space: if $N$ equally likely outcomes, $\mathbf{P(E)=|E|/N}$.
+  \item Typical uses: cards, lotteries, random rankings (e.g.\ position of top-ranked woman among 10).
+\end{itemize}
+
+%-----------------------------------------------------------
+% PROBABILITY LAWS & CONDITIONAL PROBABILITY
+%-----------------------------------------------------------
+\section{Probability Laws \& Bayes}
+\begin{itemize}
+  \item Axioms: $0\le P(A)\le1$, $P(S)=1$, and for pairwise disjoint $A_i$, $P(\cup_i A_i)=\sum_i P(A_i)$.
+  \item Basic identities: $\mathbf{P(A^c)=1-P(A)}$, $\mathbf{P(A\cup B)=P(A)+P(B)-P(A\cap B)}$. If $A\subseteq B$, then $P(A)\le P(B)$.
+  \item Conditional probability: $\mathbf{P(A\mid B)=P(A\cap B)/P(B)}$ for $P(B)>0$.
+  \item Product rule: $\mathbf{P(A\cap B)=P(A\mid B)P(B)=P(B\mid A)P(A)}$.
+  \item Chain rule (several events): $\mathbf{P(A_1\cap\cdots\cap A_n)=P(A_1)\prod_{k=2}^n P(A_k\mid A_1,\dots,A_{k-1})}$.
+  \item Law of total probability: if $\{B_i\}$ partition $S$, then $\mathbf{P(A)=\sum_i P(A\mid B_i)P(B_i)}$.
+  \item Bayes' theorem: $\mathbf{P(B_i\mid A)=\dfrac{P(A\mid B_i)P(B_i)}{\sum_j P(A\mid B_j)P(B_j)}}$ (posterior = likelihood $\times$ prior / evidence).
+\end{itemize}
+
+%-----------------------------------------------------------
+% INDEPENDENCE
+%-----------------------------------------------------------
+\section{Independence}
+\begin{itemize}
+  \item Two events $A,B$ independent if $\mathbf{P(A\cap B)=P(A)P(B)}$ (equivalently $P(A\mid B)=P(A)$, $P(B\mid A)=P(B)$).
+  \item Several events $A_1,\dots,A_n$ independent if for any subset $\{i_1,\dots,i_k\}$, $\mathbf{P(A_{i_1}\cap\cdots\cap A_{i_k})=\prod_{j=1}^k P(A_{i_j})}$.
+  \item Pairwise independence does not imply mutual independence.
+  \item Recognition: sampling with replacement $\Rightarrow$ trials usually independent; without replacement $\Rightarrow$ typically dependent (Hypergeometric).
+\end{itemize}
+
+%-----------------------------------------------------------
+% EXPECTATION, VARIANCE & RULES
+%-----------------------------------------------------------
+\section{Expectation \& Variance}
+\begin{itemize}
+  \item Expectation: discrete $\mathbf{E[X]=\sum_x x\,p(x)}$; continuous $\mathbf{E[X]=\int_{-\infty}^{\infty} x f(x)\,dx}$.
+  \item General function: $\mathbf{E[g(X)]=\sum_x g(x)p(x)}$ (discrete) or $\mathbf{E[g(X)]=\int g(x)f(x)\,dx}$ (continuous).
+  \item Linearity: $\mathbf{E\big[\sum_i a_i X_i + b\big]=\sum_i a_i E[X_i]+b}$ (no independence required).
+  \item Variance: $\mathbf{\mathrm{Var}(X)=E[(X-\mu)^2]}$ with $\mu=E[X]$.
+  \item Variance shortcut: $\mathbf{\mathrm{Var}(X)=E[X^2]-\big(E[X]\big)^2}$.
+  \item Linear transform: $\mathbf{E[aX+b]=aE[X]+b}$ and $\mathbf{\mathrm{Var}(aX+b)=a^2\mathrm{Var}(X)}$.
+  \item Independent sum: if $X,Y$ independent, $\mathbf{\mathrm{Var}(X+Y)=\mathrm{Var}(X)+\mathrm{Var}(Y)}$. In general, $\mathrm{Var}(X+Y)=\mathrm{Var}(X)+\mathrm{Var}(Y)+2\mathrm{Cov}(X,Y)$.
+  \item Nonnegative RV: for $X\ge0$, $\mathbf{E[X]=\int_{0}^{\infty} P(X>x)\,dx}$.
+\end{itemize}
+
+%-----------------------------------------------------------
+% DISCRETE DISTRIBUTIONS (CONDENSED)
+%-----------------------------------------------------------
+\section{Discrete Distributions (Formulas \& Use)}
+\begin{itemize}
+  \item Bernoulli$(p)$:
+    \begin{itemize}
+      \item Support: $x\in\{0,1\}$.
+      \item PMF: $\mathbf{P(X=x)=p^x(1-p)^{1-x}}$.
+      \item Mean/Var: $\mathbf{E[X]=p}$, $\mathbf{\mathrm{Var}(X)=p(1-p)}$.
+      \item Single success/failure trial; building block for Binomial.
+    \end{itemize}
+  \item Binomial$(n,p)$:
+    \begin{itemize}
+      \item Support: $x=0,\dots,n$.
+      \item PMF: $\mathbf{P(X=x)=\binom{n}{x}p^x(1-p)^{n-x}}$.
+      \item Mean/Var: $\mathbf{E[X]=np}$, $\mathbf{\mathrm{Var}(X)=np(1-p)}$.
+      \item Setting: $n$ independent trials, success prob.\ $p$ constant, RV = \# successes.
+    \end{itemize}
+  \item Geometric$(p)$:
+    \begin{itemize}
+      \item Support: $x=1,2,\dots$.
+      \item PMF: $\mathbf{P(X=x)=(1-p)^{x-1}p}$.
+      \item Tail: $\mathbf{P(X>k)=(1-p)^k}$.
+      \item Mean/Var: $\mathbf{E[X]=1/p}$, $\mathbf{\mathrm{Var}(X)=(1-p)/p^2}$.
+      \item \# trials until first success; memoryless: $\mathbf{P(X>m+n\mid X>n)=P(X>m)}$.
+    \end{itemize}
+  \item Negative Binomial$\text{NB}(r,p)$:
+    \begin{itemize}
+      \item Support: $x=r,r+1,\dots$.
+      \item PMF: $\mathbf{P(X=x)=\binom{x-1}{r-1}p^r(1-p)^{x-r}}$.
+      \item Mean/Var: $\mathbf{E[X]=r/p}$, $\mathbf{\mathrm{Var}(X)=r(1-p)/p^2}$.
+      \item \# trials until $r$-th success; Geometric is special case $r=1$.
+    \end{itemize}
+  \item Hypergeometric$(N,m,n)$:
+    \begin{itemize}
+      \item Support: $x=0,\dots,n$.
+      \item PMF: $\mathbf{P(X=x)=\dfrac{\binom{m}{x}\binom{N-m}{n-x}}{\binom{N}{n}}}$.
+      \item Mean: $\mathbf{E[X]=\dfrac{nm}{N}}$.
+      \item Var: $\mathbf{\mathrm{Var}(X)=n\dfrac{m}{N}\Big(1-\dfrac{m}{N}\Big)\dfrac{N-n}{N-1}}$.
+      \item Sampling \textbf{without replacement} from finite population of size $N$ with $m$ successes; sample size $n$.
+    \end{itemize}
+  \item Poisson$(\lambda)$:
+    \begin{itemize}
+      \item Support: $x=0,1,2,\dots$.
+      \item PMF: $\mathbf{P(X=x)=e^{-\lambda}\dfrac{\lambda^x}{x!}}$.
+      \item CDF key: $\mathbf{P(X\le x)=e^{-\lambda}\sum_{t=0}^x \dfrac{\lambda^t}{t!}}$.
+      \item Mean/Var: $\mathbf{E[X]=\lambda}$, $\mathbf{\mathrm{Var}(X)=\lambda}$.
+      \item Counts of “rare” events in fixed interval; approx.\ Bin$(n,p)$ when $n$ large, $p$ small, $\lambda=np$.
+    \end{itemize}
+\end{itemize}
+
+%-----------------------------------------------------------
+% CONTINUOUS DISTRIBUTIONS (CONDENSED)
+%-----------------------------------------------------------
+\section{Continuous Distributions (Formulas \& Use)}
+\begin{itemize}
+  \item Uniform $U(a,b)$:
+    \begin{itemize}
+      \item Support: $a<x<b$.
+      \item PDF: $\mathbf{f(x)=1/(b-a)}$ for $a<x<b$, $0$ otherwise.
+      \item CDF: $\mathbf{F(x)=\dfrac{x-a}{b-a}}$ for $a<x<b$.
+      \item Mean/Var: $\mathbf{E[X]=(a+b)/2}$, $\mathbf{\mathrm{Var}(X)=(b-a)^2/12}$.
+      \item All values in $(a,b)$ equally likely; $P(c<X<d)=(d-c)/(b-a)$.
+    \end{itemize}
+  \item Normal $N(\mu,\sigma^2)$:
+    \begin{itemize}
+      \item Support: $x\in\mathbb{R}$.
+      \item PDF: $\mathbf{f(x)=\dfrac{1}{\sqrt{2\pi}\sigma}e^{-(x-\mu)^2/(2\sigma^2)}}$.
+      \item CDF: $\mathbf{F(x)=\Phi\!\big(\tfrac{x-\mu}{\sigma}\big)}$.
+      \item Mean/Var: $\mathbf{E[X]=\mu}$, $\mathbf{\mathrm{Var}(X)=\sigma^2}$.
+      \item Standardization: $\mathbf{Z=(X-\mu)/\sigma\sim N(0,1)}$; use Z-table.
+    \end{itemize}
+  \item Exponential $\text{Exp}(\lambda)$:
+    \begin{itemize}
+      \item Support: $x\ge0$.
+      \item PDF: $\mathbf{f(x)=\lambda e^{-\lambda x}}$.
+      \item CDF: $\mathbf{F(x)=1-e^{-\lambda x}}$, tail $\mathbf{P(X>x)=e^{-\lambda x}}$.
+      \item Mean/Var: $\mathbf{E[X]=1/\lambda}$, $\mathbf{\mathrm{Var}(X)=1/\lambda^2}$.
+      \item Waiting time to first event in Poisson process of rate $\lambda$; memoryless: $\mathbf{P(X>t+s\mid X>t)=P(X>s)}$.
+    \end{itemize}
+  \item Gamma $\Gamma(\alpha,\lambda)$:
+    \begin{itemize}
+      \item Support: $x\ge0$.
+      \item PDF: $\mathbf{f(x)=\dfrac{\lambda^{\alpha}}{\Gamma(\alpha)}x^{\alpha-1}e^{-\lambda x}}$.
+      \item Mean/Var: $\mathbf{E[X]=\alpha/\lambda}$, $\mathbf{\mathrm{Var}(X)=\alpha/\lambda^2}$.
+      \item If $\alpha=n$ integer, $X$ is waiting time to $n$-th event in Poisson process with rate $\lambda$. Special case: Exp$(\lambda)=\Gamma(1,\lambda)$.
+    \end{itemize}
+\end{itemize}
+
+%-----------------------------------------------------------
+% POISSON PROCESS & EXPONENTIAL
+%-----------------------------------------------------------
+\section{Poisson Process \& Exp}
+\begin{itemize}
+  \item Assumptions:
+    \begin{itemize}
+      \item Independent increments (disjoint intervals independent).
+      \item Stationary increments (rate $\lambda$ constant).
+      \item Probability of $\ge2$ events in a very small interval is negligible.
+    \end{itemize}
+  \item Rate interpretation: if events occur at rate $\lambda$ per unit time, then in time $t$ the mean count is $\lambda t$ and $\mathbf{N(t)\sim\text{Poisson}(\lambda t)}$.
+  \item Then:
+    \begin{itemize}
+      \item $N(t)$, the \# of events in interval of length $t$, has $N(t)\sim\text{Poisson}(\lambda t)$.
+      \item Waiting time to first event is Exp$(\lambda)$.
+      \item Waiting time to $k$-th event is $\Gamma(k,\lambda)$.
+    \end{itemize}
+\end{itemize}
+
+%-----------------------------------------------------------
+% NORMAL DISTRIBUTION, Z-SCORES, QUANTILES
+%-----------------------------------------------------------
+\section{Normal, Z-scores, Quantiles}
+\begin{itemize}
+  \item Standardization: $\mathbf{Z=(X-\mu)/\sigma}$.
+  \item Forward: given $x$, compute $z=(x-\mu)/\sigma$, then $P(X\le x)=P(Z\le z)$.
+  \item Inverse: given $p$, find $z_p$ such that $P(Z\le z_p)=p$, then $x_p=\mu+\sigma z_p$.
+  \item Linear transformations: if $X\sim N(\mu,\sigma^2)$ and $Y=aX+b$, then $Y\sim N(a\mu+b,a^2\sigma^2)$.
+  \item Spread comparison: larger $\sigma$ $\Rightarrow$ wider spread, flatter peak (center given by $\mu$).
+  \item Empirical rule: about $68\%$ within $\mu\pm\sigma$, $95\%$ within $\mu\pm2\sigma$, $99.7\%$ within $\mu\pm3\sigma$.
+\end{itemize}
+
+%-----------------------------------------------------------
+% NORMAL APPROX TO BINOMIAL & POISSON
+%-----------------------------------------------------------
+\section{Normal Approx.\ Binomial/Poisson}
+\begin{itemize}
+  \item If $X\sim\text{Bin}(n,p)$ and $np(1-p)\gtrsim10$, then $X\approx N(\mu=np,\sigma^2=np(1-p))$.
+  \item Continuity correction (with $Y\sim N(\mu,\sigma^2)$):
+    \begin{itemize}
+      \item $\mathbf{P(X=k)\approx P(k-0.5<Y<k+0.5)}$.
+      \item $\mathbf{P(X\le k)\approx P(Y<k+0.5)}$.
+      \item $\mathbf{P(X<k)\approx P(Y<k-0.5)}$.
+      \item $\mathbf{P(X\ge k)\approx P(Y>k-0.5)}$.
+      \item $\mathbf{P(a\le X\le b)\approx P(a-0.5<Y<b+0.5)}$.
+    \end{itemize}
+  \item For $X\sim\text{Poisson}(\lambda)$ with large $\lambda$, $X\approx N(\lambda,\lambda)$.
+\end{itemize}
+
+%-----------------------------------------------------------
+% TRANSFORMATIONS OF RANDOM VARIABLES
+%-----------------------------------------------------------
+\section{Transformations $Y=g(X)$}
+\begin{itemize}
+  \item Discrete: if $Y=g(X)$ and $X$ discrete, $\mathbf{P(Y=y)=\sum_{x: g(x)=y} P(X=x)}$.
+  \item Continuous, monotone $g$:
+    \begin{itemize}
+      \item Step 1: find support of $Y$ by mapping endpoints of $X$'s support through $g$.
+      \item Step 2: find inverse $x=g^{-1}(y)$ on that support.
+      \item Step 3: use $\mathbf{f_Y(y)=f_X(g^{-1}(y))\left|\dfrac{d}{dy}g^{-1}(y)\right|}$.
+    \end{itemize}
+  \item Example: $X\sim U(a,b)$, $Y=e^X$. Then $x=\ln y$, support $e^a<y<e^b$, and $f_Y(y)=f_X(\ln y)\cdot\big|\tfrac{d}{dy}\ln y\big|=(1/(b-a))\cdot(1/y)$ on $(e^a,e^b)$.
+  \item Example: $X\sim\text{Exp}(\lambda)$, $Y=c e^X$: same 3-step method (invert, differentiate, plug into formula).
+\end{itemize}
+
+%-----------------------------------------------------------
+% MODELING EXAMPLES & STRATEGIES
+%-----------------------------------------------------------
+\section{Modeling Strategy (What to Use?)}
+\begin{itemize}
+  \item Binomial: “exactly $k$ successes in $n$ trials” (coin flips, correct answers, defective items with replacement).
+  \item Hypergeometric: from $N$ items, $m$ of type 1, sample $n$ without replacement, probability of $k$ type 1.
+  \item Geometric: trial of first success.
+  \item Negative Binomial: trial of $r$-th success.
+  \item Poisson: $k$ events in fixed time/space with constant rate and independent events (typos per page, crashes per month, customers per minute).
+  \item Exponential: time until first event when memoryless assumption is reasonable.
+  \item Gamma: time until $r$-th event in Poisson process.
+  \item Uniform: quantity equally likely anywhere in an interval.
+  \item Normal: sums/averages of many small independent contributions; test scores, measurement errors, CLT-based approximations.
+\end{itemize}
+
+%-----------------------------------------------------------
+% COMMON APPROXIMATIONS & SERIES
+%-----------------------------------------------------------
+\section{Common Approximations \& Series}
+\begin{itemize}
+  \item Poisson approx Binomial: if $X\sim\text{Bin}(n,p)$, $n$ large and $p$ small, let $\lambda=np$. Then $\mathbf{P(X=k)\approx e^{-\lambda}\lambda^k/k!}$.
+  \item Rule of thumb: good approx if $n\ge20$, $p\le0.05$, $\lambda=np$ moderate; very good if $n\ge100$, $np\le10$.
+  \item Normal approx Binomial: use when $np(1-p)\ge10$, with continuity correction.
+  \item Binomial theorem: $(x+y)^n=\sum_{k=0}^n \binom{n}{k}x^k y^{n-k}$.
+  \item Log rules: $\log(ab)=\log a+\log b$, $\log(a^c)=c\log a$, $\log(a/b)=\log a-\log b$.
+\end{itemize}
+
+\vfill\null
+\end{multicols}
+
+
+
+\vspace{0.2em}
+\hrule
+\vspace{0.1em}
+\begin{center}\scriptsize\bfseries\boldmath Last updated: \today\end{center}
+
+\end{document}

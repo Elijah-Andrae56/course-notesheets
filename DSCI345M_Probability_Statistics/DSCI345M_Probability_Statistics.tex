@@ -1,0 +1,540 @@
+\documentclass[10pt,landscape]{article}
+
+%===========================================================
+% Encoding and Fonts (for XeLaTeX)
+%===========================================================
+\usepackage{fontspec}
+\setmainfont{Latin Modern Roman}
+
+%===========================================================
+% Page layout (tighter margins)
+%===========================================================
+\usepackage[paper=letterpaper,left=0.20in,right=0.20in,top=0.20in,bottom=0.20in]{geometry}
+\usepackage{multicol}
+\raggedcolumns
+\setlength{\columnsep}{0.08in}
+\setlength{\columnseprule}{0.4pt}
+
+%===========================================================
+% Colors
+%===========================================================
+\usepackage[table]{xcolor}
+\definecolor{sectioncolor}{RGB}{0,102,204}
+\definecolor{tablegray}{gray}{0.90}
+
+%===========================================================
+% Compact lists
+%===========================================================
+\usepackage{enumitem}
+\setlist[itemize]{nosep,leftmargin=*,itemsep=0pt,topsep=0pt,parsep=0pt,partopsep=0pt}
+\setlist[enumerate]{nosep,leftmargin=*,itemsep=0pt,topsep=0pt,parsep=0pt,partopsep=0pt}
+\setlength{\multicolsep}{0.1em}
+
+%===========================================================
+% Colored section headings (minimal vertical spacing)
+%===========================================================
+\usepackage{titlesec}
+\titleformat{\section}
+  {\bfseries\color{sectioncolor}\large}
+  {}{0pt}{}
+\titlespacing*{\section}{0pt}{0.2ex}{0.2ex}
+\setcounter{secnumdepth}{0}
+
+%===========================================================
+% Math, tables, etc. (tighter table padding)
+%===========================================================
+\usepackage{amsmath,amssymb,booktabs,tabularx,array,makecell,caption}
+\renewcommand{\arraystretch}{1.0}
+\setlength{\tabcolsep}{1pt}
+
+% Define a ragged‐right column type for tabularx
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+
+%===========================================================
+% No page numbers, zero paragraph spacing
+%===========================================================
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+\linespread{0.9}
+
+%===========================================================
+% Begin Document
+%===========================================================
+\begin{document}
+\scriptsize
+
+%###########################################################
+% COMBINED DISTRIBUTIONS + PARAMETERS TABLE (FULL WIDTH)
+%###########################################################
+\begin{table}[!ht]
+\scriptsize
+\centering
+\setlength{\extrarowheight}{0.2pt}
+\rowcolors{2}{tablegray}{white}
+\begin{tabularx}{\textwidth}{@{} 
+    L{0.85in}  % Distribution
+    L{0.50in}  % Support
+    L{1.10in}  % PMF / PDF
+    L{1.2in}  % CDF
+    c          % Mean
+    c          % Variance
+    c          % Pars.
+    L{4.9in}     % Interpretation / Typical Scenario
+  @{}}
+\toprule
+\textbf{Distribution} 
+  & \textbf{Support} 
+  & \textbf{PMF / PDF} 
+  & \textbf{CDF} 
+  & \textbf{Mean / $\mathbb{E}[x]$} 
+  & \textbf{Var.} 
+  & \textbf{Pars.} 
+  & \textbf{Interpretation / Typical Scenario} \\
+\midrule
+\multicolumn{8}{l}{\textbf{Discrete distributions}} \\
+
+Bernoulli$(p)$ 
+  & $x\in\{0,1\}$ 
+  & $p^x(1-p)^{\,1-x}$ 
+  & $x<0\Rightarrow0,\;0\le x<1\Rightarrow1-p,\;x\ge1\Rightarrow1$ 
+  & $p$ 
+  & $p(1-p)$ 
+  & $p$ 
+  & A single “yes/no” trial: success with probability $p$ and failure with probability $1 - p$. \\
+
+Binomial$(n,p)$ 
+  & $x=0,\dots,n$ 
+  & $\displaystyle\binom{n}{x}\,p^x(1-p)^{\,n-x}$ 
+  & $\displaystyle\sum_{t=0}^x \binom{n}{t}\,p^t(1-p)^{\,n-t}$ 
+  & $n\,p$ 
+  & $n\,p(1-p)$ 
+  & $n,\,p$ 
+  & The count of successes in $n$ independent “yes/no” trials, each with probability $p$. \\
+
+Geometric$(p)$ 
+  & $x=1,2,\dots$ 
+  & $(1-p)^{\,x-1}\,p$ 
+  & $1 - (1-p)^x$ 
+  & $1/p$ 
+  & $(1-p)/p^2$ 
+  & $p$ 
+  & The number of trials required to obtain the first success, where each trial has success probability $p$. \\
+
+Poisson$(\lambda)$ 
+  & $x=0,1,2,\dots$ 
+  & $\displaystyle e^{-\lambda}\,\frac{\lambda^x}{x!}$ 
+  & $\displaystyle e^{-\lambda}\sum_{t=0}^x \frac{\lambda^t}{t!}$ 
+  & $\lambda$ 
+  & $\lambda$ 
+  & $\lambda$ 
+  & The number of events occurring in a fixed interval when events happen independently at a constant average rate $\lambda$. \\
+
+\text{Hypergeometric}(N, K, n) 
+  & $x = \max(0,\, n - (N - K)),\,\dots,\,\min(n,\,K)$ 
+  & $\displaystyle\frac{\binom{K}{x}\binom{N-K}{n-x}}{\binom{N}{n}}$ 
+  & $\displaystyle\sum_{t=0}^{x} \frac{\binom{K}{t}\binom{N-K}{n-t}}{\binom{N}{n}}$ 
+  & $n\,\frac{K}{N}$ 
+  & $n\,\frac{K}{N}\left(1 - \frac{K}{N}\right)\left(\frac{N-n}{N-1}\right)$ 
+  & $N,\,K,\,n$ 
+  & Models the probability of obtaining exactly $x$ successes in $n$ draws \emph{without replacement} from a population of $N$ items containing $K$ total successes. The PMF returns $P(X = x)$ — the probability that exactly $x$ of the $n$ drawn items are successes. \\
+
+
+Negative Binomial$(r,p)$ 
+  & $x=r, r+1,\dots$ 
+  & $\displaystyle\binom{x-1}{r-1}p^r(1-p)^{x-r}$ 
+  & $\displaystyle\sum_{t=r}^x \binom{t-1}{r-1}p^r(1-p)^{t-r}$ 
+  & $\displaystyle \frac{r}{p}$ 
+  & $\displaystyle \frac{r(1-p)}{p^2}$ 
+  & $r,\,p$ 
+  & The number of trials needed to achieve $r$ successes in a sequence of independent Bernoulli trials with success probability $p$. Models overdispersed count data or waiting times for repeated events. \\
+
+\midrule
+\multicolumn{8}{l}{\textbf{Continuous distributions}} \\
+
+Exponential$(\lambda)$ 
+  & $x\ge0$ 
+  & $\lambda\,e^{-\lambda x}$ 
+  & $1 - e^{-\lambda x}$ 
+  & $1/\lambda$ 
+  & $1/\lambda^2$ 
+  & $\lambda$ 
+  & The waiting time until the next event in a Poisson process with rate $\lambda$. (Memoryless: elapsed time does not affect remaining wait.) \\
+
+Gamma$(\alpha,\theta)$ 
+  & $x\ge0$ 
+  & $\displaystyle \frac{x^{\,\alpha-1}\,e^{-\,x/\theta}}{\Gamma(\alpha)\,\theta^\alpha}$ 
+  & $\displaystyle \frac{1}{\Gamma(\alpha)}\,\gamma\!\Bigl(\alpha,\tfrac{x}{\theta}\Bigr)$ 
+  & $\alpha\,\theta$ 
+  & $\alpha\,\theta^2$ 
+  & $\alpha,\,\theta$ 
+  & The waiting time until the $\alpha$th event in a Poisson process of rate $1/\theta$; more generally, a model for positive, skewed data (e.g., total time for $\alpha$ independent exponential tasks). \\
+
+Normal$(\mu,\sigma^2)$ 
+  & $x\in\mathbb{R}$ 
+  & $\displaystyle \frac{1}{\sigma\sqrt{2\pi}}\,\exp\!\Bigl(-\tfrac{(x-\mu)^2}{2\sigma^2}\Bigr)$ 
+  & $\Phi\!\Bigl(\tfrac{x-\mu}{\sigma}\Bigr)$ 
+  & $\mu$ 
+  & $\sigma^2$ 
+  & $\mu,\,\sigma$ 
+  & The “bell‐curve” distribution for continuous data arising from many small, independent effects. Commonly used to model measurement error or natural variation. \\
+
+Beta$(\alpha,\beta)$ 
+  & $0<x<1$ 
+  & $\displaystyle \frac{x^{\,\alpha-1}(1-x)^{\,\beta-1}}{B(\alpha,\beta)}$ 
+  & $I_x(\alpha,\beta)$ 
+  & $\displaystyle \frac{\alpha}{\alpha+\beta}$ 
+  & $\displaystyle \frac{\alpha\beta}{(\alpha+\beta)^2(\alpha+\beta+1)}$ 
+  & $\alpha,\,\beta$ 
+  & A flexible model for a probability or proportion on (0,1), able to take U‐shaped, flat, or peaked forms. Frequently used as a prior for an unknown success probability. \\
+
+Uniform$[a,b]$ 
+  & $a\le x\le b$ 
+  & $1/(b-a)$ 
+  & $(x-a)/(b-a)$ 
+  & $\displaystyle \frac{a+b}{2}$ 
+  & $(b-a)^2/12$ 
+  & $a,\,b$ 
+  & All values between $a$ and $b$ are equally likely. Used when only bounds are known and no particular sub‐interval is preferred. \\
+
+Cauchy$(x_0,\gamma)$ 
+  & $x\in\mathbb{R}$ 
+  & $\displaystyle \frac{1}{\pi\gamma\left[1 + \left(\frac{x - x_0}{\gamma}\right)^2\right]}$ 
+  & $\displaystyle \frac{1}{\pi}\arctan\left(\frac{x - x_0}{\gamma}\right) + \frac{1}{2}$ 
+  & undefined 
+  & undefined 
+  & $x_0,\,\gamma$ 
+  & A heavy-tailed distribution without a defined mean or variance; arises in resonance behavior and as the ratio of two standard normal variables. Notable for extreme sensitivity to outliers. \\
+
+\bottomrule
+\end{tabularx}
+\end{table}
+
+%===========================================================
+% START THREE‐COLUMN ENVIRONMENT
+%===========================================================
+\begin{multicols}{3}
+
+%-----------------------------------------------------------
+% PROBABILITY BASICS
+%-----------------------------------------------------------
+\section{Probability Basics}
+\begin{itemize}
+  \item \textbf{Sample space} $\Omega$; events $A\subseteq\Omega$.
+  \item \textbf{Axioms:} $\displaystyle 0 \le P(A) \le 1,\; P(\Omega)=1,\; P\bigl(\cup_{i}A_i\bigr)=\sum_i P(A_i)\text{ for disjoint }A_i.$
+  \item \textbf{Complement:} $\displaystyle P(A^c) = 1 - P(A).$
+  \item \textbf{Union:} $\displaystyle P(A \cup B) = P(A)+P(B)-P(A\cap B).$
+  \item \textbf{Independence:} $\displaystyle P(A \cap B) = P(A)\,P(B)\quad(\Leftrightarrow P(A\mid B)=P(A)).$
+  \item \textbf{Conditional:} $\displaystyle P(A\mid B)=\frac{P(A\cap B)}{P(B)},\quad P(B)>0.$
+  \item \textbf{Bayes:} $\displaystyle P(B\mid A)=\frac{P(A\mid B)\,P(B)}{P(A)},\; P(A)=\sum_iP(A\mid B_i)\,P(B_i).$
+\noindent $B_i$ is usually $B$ and $B^c$ or $P(A) = P(A \cap B) + P(A \cap B^c)$
+\end{itemize}
+
+%-----------------------------------------------------------
+% RANDOM VARIABLES & MOMENTS
+%-----------------------------------------------------------
+\section{Random Variables \& Moments}
+\begin{itemize}
+  \item Discrete RV: PMF $P(X=x)$. Continuous RV: PDF $f(x)$, CDF $F(x)=P(X\le x)$.
+  \item $\displaystyle E[X]=\begin{cases} \sum_x x\,P(X=x), & \text{(discrete)},\\[2pt]
+        \displaystyle\int_{-\infty}^{\infty} x\,f(x)\,dx, & \text{(continuous)}.\end{cases}$
+  \item $E[g(x)] = \sum_x g(x) P(X=x)$
+  \item \textbf{Linearity:} $\displaystyle E[aX + bY] = a\,E[X] + b\,E[Y].$
+  \item $\displaystyle \mathrm{Var}[X] = E[X^2] - \bigl(E[X]\bigr)^2,\quad sd[X]=\sqrt{\mathrm{Var}[X]}.$
+  \item $\displaystyle \mathrm{Var}[aX + bY] = a^2\,\mathrm{Var}[X] + b^2\,\mathrm{Var}[Y] + 2ab\,\mathrm{Cov}(X,Y).$
+  \item \textbf{Tail‐sum (integer $X\ge0$):} $\displaystyle E[X] = \sum_{k=0}^{\infty} P(X > k).$
+  \item \textbf{Law of total expectation:} $\displaystyle E[X] = E\bigl[E[X\mid Y]\bigr].$
+\end{itemize}
+
+%-----------------------------------------------------------
+% COVARIANCE & CORRELATION
+%-----------------------------------------------------------
+\section{Covariance \& Correlation}
+\begin{itemize}
+  \item \textbf{Definition:} 
+    $\displaystyle \mathrm{Cov}(X,Y) = \mathbb{E}[XY] - \mathbb{E}[X]\,\mathbb{E}[Y], \quad \mathrm{Cov}(X, X) = \mathrm{Var}[X].$
+    
+  \item \textbf{Linearity:} 
+    \begin{itemize}
+      \item $\displaystyle \mathrm{Cov}(X, aY + bZ) = a\,\mathrm{Cov}(X,Y) + b\,\mathrm{Cov}(X,Z)$
+      \item $\displaystyle \mathrm{Cov}(aX + bY, Z) = a\,\mathrm{Cov}(X,Z) + b\,\mathrm{Cov}(Y,Z)$
+    \end{itemize}
+
+  \item \textbf{Symmetry:} 
+    $\displaystyle \mathrm{Cov}(X,Y) = \mathrm{Cov}(Y,X)$
+
+  \item \textbf{Correlation coefficient:}
+    $\displaystyle \rho_{XY} = \frac{\mathrm{Cov}(X,Y)}{\mathrm{sd}[X]\,\mathrm{sd}[Y]}, \quad -1 \leq \rho_{XY} \leq 1$
+
+  \item \textbf{Covariance matrix:}$ \Sigma_{jk} = \mathrm{Cov}(X_j, X_k), \quad \text{or} \quad C = \frac{1}{n} A^\top A$ \\
+ \textit{(symmetric, with variances on the diagonal)}
+\end{itemize}
+
+%-----------------------------------------------------------
+% EXPECTATION, VARIANCE & IDENTITY RULES
+%-----------------------------------------------------------
+\section{Expectation, Variance \& Identity Rules}
+\begin{itemize}
+  \item \textbf{Linearity of Expectation:} 
+    $\displaystyle \mathbb{E}[aX + bY] = a\,\mathbb{E}[X] + b\,\mathbb{E}[Y]$
+
+  \item \textbf{Variance rules:}
+    \begin{itemize}
+      \item $\displaystyle \mathrm{Var}[aX + b] = a^2\,\mathrm{Var}[X]$
+      \item $\displaystyle \mathrm{Var}[X + Y] = \mathrm{Var}[X] + \mathrm{Var}[Y] + 2\,\mathrm{Cov}(X,Y)$
+      \item $\displaystyle \mathrm{Var}[X] = \mathbb{E}[X^2] - \left(\mathbb{E}[X]\right)^2$
+    \end{itemize}
+\end{itemize}
+
+
+%-----------------------------------------------------------
+% SAMPLING STATISTICS
+%-----------------------------------------------------------
+\section{Sampling Statistics}
+\begin{itemize}
+  \item Sample mean $\displaystyle \bar X = \tfrac{1}{n}\sum_{i=1}^n X_i$: $E[\bar X]=\mu,\quad sd(\bar X)=\tfrac{\sigma}{\sqrt{n}}.$
+  \item Sample variance $\displaystyle S^2 = \tfrac{1}{\,n-1\,}\sum_{i=1}^n (X_i - \bar X)^2$ (unbiased for $\sigma^2$).
+  \item Student $t$: $\displaystyle T = \frac{\bar X - \mu}{\,S/\sqrt{n}\,} \sim t_{n-1}\quad(\text{normal data}).$
+\end{itemize}
+
+%-----------------------------------------------------------
+% CENTRAL LIMIT THEOREM
+%-----------------------------------------------------------
+\section{Central Limit Theorem}
+\begin{itemize}
+  \item For i.i.d.\ $X_i$ with mean $\mu$, var.\ $\sigma^2$, $\displaystyle \frac{\bar X - \mu}{\sigma/\sqrt{n}} \xrightarrow{d} \mathcal{N}(0,1)$ as $n\to\infty$.
+  \item Hence $\displaystyle S_n = \sum_{i=1}^n X_i \approx \mathcal{N}(n\mu,\,n\sigma^2)$ for large $n$.
+\noindent \textit{With large enough sample size $n$ the distribution will become approximately normal}
+\end{itemize}
+
+%-----------------------------------------------------------
+% INFERENCE (CI & HYPOTHESIS TESTING)
+%-----------------------------------------------------------
+\section{Inference}
+
+\textbf{t-Distribution (Small Samples)}
+\begin{itemize}
+  \item Assume $X_1,\dots,X_n \overset{\text{iid}}{\sim} \mathcal{N}(\mu,\sigma^2)$, $\sigma$ unknown.
+  \item Sample stats: $\bar X$, $S^2$.
+  \item Test statistic: $\displaystyle T = \dfrac{\bar X-\mu}{\,S/\sqrt{n}\,}\;\sim\;t_{n-1}$.
+  \item $(1-\alpha)$ CI for $\mu$: $\displaystyle \bar X \pm t^{*}_{n-1,\alpha/2}\,\dfrac{S}{\sqrt{n}}$.
+  \item Use when $n\lesssim30$ and $\sigma$ unknown.
+  \item $\Phi (t) = P(t \leq T)$
+  \item P-val $= 2(1-\Phi (t))$
+\end{itemize}
+
+\textbf{Example:} $n = 10$, $\bar X = 5.2$, $S = 1.3$, test $H_0: \mu = 5$ vs $H_a: \mu \ne 5$
+
+$t = \dfrac{5.2 - 5}{1.3/\sqrt{10}} \approx \dfrac{0.2}{0.411} \approx 0.487$
+
+df $= 9$, two-tailed critical value $t^* \approx 2.262$
+
+Since $|t| = 0.487 < 2.262$, fail to reject $H_0$: no significant difference.
+
+
+\textbf{Confidence Intervals (Normal)}
+\begin{itemize}
+  \item Assume $X_1,\dots,X_n \overset{\text{iid}}{\sim} \mathcal{N}(\mu,\sigma^2)$.
+  \item $(1-\alpha)$ CI for $\mu$: $\displaystyle \bar X \pm
+    \begin{cases}
+      t_{n-1,\alpha/2}\,\dfrac{S}{\sqrt{n}}, & \sigma\text{ unknown},\\[4pt]
+      z_{\alpha/2}\,\dfrac{\sigma}{\sqrt{n}}, & \sigma\text{ known (rare).}
+    \end{cases}$
+  \item Interpretation: repeat sampling $\Rightarrow \approx(1-\alpha)$ of such intervals contain true $\mu$.
+\end{itemize}
+
+\textbf{Hypothesis Testing}
+\begin{itemize}
+  \item State the null hypothesis $H_0$ and the alternative hypothesis $H_A$. Select an appropriate test statistic $T$.
+  \item Compute the $p$-value: $\displaystyle P\bigl(|T| \ge |T_{\mathrm{obs}}| \mid H_0\bigr)$. Reject $H_0$ if $p \le \alpha$.
+  \item For a one-sample $t$-test: $\displaystyle T = \frac{\bar{X} - \mu_0}{S/\sqrt{n}}$, which follows a $t$-distribution with $n - 1$ degrees of freedom under $H_0$.
+\end{itemize}
+
+\textbf{Confidence Intervals (Diff in two population proportions)}
+\begin{itemize}
+\item Given: 
+\begin{itemize}
+  \item  Sample proportions: $\hat{p}_1$, $\hat{p}_2$
+  \item  Sample sizes: $n_1$, $n_2$
+  \item Critical value ($1.96$ for 95\% CI): $z^*$
+\end{itemize}
+  \item Standard Error: SE = $\sqrt{\frac{\hat{p}_1(1- \hat{p}_1)}{n_1} + \frac{\hat{p}_2(1-\hat{p}_2)}{n_2}}$
+  \item Two-Proportion CI: $(\hat{p}_1 - \hat{p}_2) \pm z^* \cdot SE$
+\end{itemize}
+
+
+%-----------------------------------------------------------
+% MODEL FITTING: MLE & METHOD OF MOMENTS
+%-----------------------------------------------------------
+\section{Model Fitting (MLE \& MoM)}
+
+\textbf{Maximum Likelihood Estimation (MLE):}
+\begin{itemize}
+  \item Suppose $X_1,\dots,X_n \overset{\text{iid}}{\sim} f(x\mid \theta)$.
+  \item Likelihood: $\displaystyle L(\theta)=\prod_{i=1}^n f(x_i\mid \theta)$.
+  \item Log‐likelihood: $\displaystyle \ell(\theta)=\sum_{i=1}^n \log f(x_i\mid \theta)$.
+  \item Solve $\displaystyle \nabla_\theta \ell(\theta)=0$ (score function) for $\hat\theta_{\mathrm{MLE}}$.
+  \begin{itemize}
+    \item \textit{Take the derivative with respect to each theta and set to $0$}
+  \end{itemize}
+\end{itemize}
+
+\vspace{0.2em}
+\textbf{Method of Moments (MoM):}
+\begin{itemize}
+  \item Let $X_1,\dots,X_n$ have $k$ unknown parameters, $j = 1, \dots, k$.
+  \item Equate $\displaystyle E[X^j] = \tfrac{1}{n}\sum_{i=1}^n x_i^j$ for each $j$.
+  \item Example ($k=2$): Suppose $X_i \overset{\text{iid}}{\sim} N(\mu,\sigma^2)$. Then $\displaystyle E[X] = \mu, \quad E[X^2] = \mu^2 + \sigma^2.$ Equate to $\displaystyle m_1 = \tfrac{1}{n}\sum_{i=1}^n x_i, \quad m_2 = \tfrac{1}{n}\sum_{i=1}^n x_i^2,$ which yields $\displaystyle \hat{\mu}_{\mathrm{MoM}} = m_1, \quad \hat{\sigma}^2_{\mathrm{MoM}} = m_2 - m_1^2.$
+\end{itemize}
+
+%-----------------------------------------------------------
+% LINEAR MODELS (OLS)
+%-----------------------------------------------------------
+\section{Linear Models (OLS)}
+\begin{itemize}
+  \item \textbf{Simple regression:} $Y = a\,X + b + \varepsilon$, $E[\varepsilon]=0$. $\displaystyle \hat a = \frac{\mathrm{Cov}(X,Y)}{\mathrm{Var}(X)},\quad \hat b = \bar Y - \hat a\,\bar X.$
+  \item \textbf{Multiple regression:} $Y = X\beta + \varepsilon$, $\displaystyle \hat\beta = (X^\top X)^{-1} X^\top Y.$
+  \item Residuals $e_i=Y_i - \hat Y_i$; check homoskedasticity, independence, etc.
+\end{itemize}
+
+%-----------------------------------------------------------
+% PRINCIPAL COMPONENT ANALYSIS (PCA)
+%-----------------------------------------------------------
+\section{Principal Component Analysis}
+\begin{itemize}
+  \item Compute covariance/correlation matrix $\Sigma$ of (standardized) data.
+  \item Eigenvectors $v_i$ of $\Sigma$ are PCs; eigenvalues $\lambda_i$ give variance explained.
+  \item First $k$ PCs capture $\displaystyle \bigl(\sum_{i=1}^k \lambda_i\bigr)\big/\bigl(\sum_j \lambda_j\bigr)$ of total variance.
+  \item Use a scree plot (eigenvalue vs.\ PC index) to choose $k$.
+\end{itemize}
+
+%-----------------------------------------------------------
+% DISTRIBUTION NOTES
+%-----------------------------------------------------------
+\section{Distribution Notes}
+\begin{itemize}
+  \item \textbf{Poisson:} $E[N]=\mathrm{Var}[N]=\lambda$. Overdispersion if $\mathrm{Var}(N)>\bar N$.
+  \item \textbf{Exponential:} Memoryless: $P(T>s+t\mid T>s)=P(T>t)$.
+  \item \textbf{Gamma:} Waiting time for $\alpha$ Poisson events. $E[X]=\alpha\theta,\;\mathrm{Var}(X)=\alpha\theta^2$.
+  \item \textbf{Beta:} Support $(0,1)$; very flexible shapes for proportions.
+  \item \textbf{Normal:} Ubiquitous via CLT. PDF: $\displaystyle \phi(x)=\tfrac{1}{\sqrt{2\pi}\,\sigma}e^{-\frac{(x-\mu)^2}{2\sigma^2}}$.
+ \item  \textbf{Poisson Limit Theorem}: States that if $n$ is large, and p is small $\Rightarrow Binomial(n, p) \approx Poisson(\lambda = np)$
+\end{itemize}
+
+%-----------------------------------------------------------
+% ROBUST MODELS
+%-----------------------------------------------------------
+\section{Robust Models}
+\begin{itemize}
+  \item Use when errors are non‐Normal (heavy tails/outliers).
+  \item Standard OLS: $\varepsilon_i\sim\mathcal{N}(0,\sigma^2)$, minimize $\sum(y_i - x_i^\top\beta)^2$.
+  \item Alternative: Cauchy errors: $Y_i = x_i^\top\beta + \varepsilon_i,\;\varepsilon_i\sim\text{Cauchy}(0,\gamma)$.
+  \item Cauchy negative‐log‐likelihood grows more slowly → less sensitivity to large errors.
+\end{itemize}
+
+%-----------------------------------------------------------
+% GENERALIZED LINEAR MODELS (GLMs)
+%-----------------------------------------------------------
+\section{Generalized Linear Models}
+\begin{itemize}
+  \item \textbf{Goal:} Handle non‐Normal responses and/or non‐constant variance.
+  \item \textbf{Three parts:}
+    \begin{itemize}
+      \item \emph{Random part:} Exponential‐family distribution (Bernoulli, Poisson, …).
+      \item \emph{Systematic part:} Linear predictor $\eta = X\beta$.
+      \item \emph{Link:} $g(\mu)=\eta$, where $\mu=E[Y]$.
+    \end{itemize}
+  \item \textbf{Fitting:} Maximize log‐likelihood via IRLS (iteratively re‐weighted least squares) or other numeric method.
+  \item \textbf{Interpretation:} Depends on $g(\cdot)$. Coefficients on scale of $\eta$; back‐transform via $g^{-1}$ to original scale.
+\end{itemize}
+
+%-----------------------------------------------------------
+% LOGISTIC REGRESSION
+%-----------------------------------------------------------
+\section{Logistic Regression}
+\begin{itemize}
+  \item Model: $Y\sim\mathrm{Bernoulli}(p)$ (or Binomial for grouped data).
+  \item \textbf{Logistic link:} $\displaystyle\text{logit}(p)=\log\bigl(\tfrac{p}{1-p}\bigr)=\eta=X\beta,\quad p=\tfrac{1}{1+e^{-\eta}}$.
+  \item \textbf{Interpretation:} $\beta_j$ = change in log‐odds per unit $X_j$; $\exp(\beta_j)$ = odds‐ratio.
+  \item \textbf{Two‐point rule:} Given $(x_1,p_1)$ and $(x_2,p_2)$, $\displaystyle b = \frac{\mathrm{logit}(p_2)-\mathrm{logit}(p_1)}{x_2-x_1},\quad a = \mathrm{logit}(p_1) - b\,x_1.$
+  \item Minimize with Log-Likelihood: $L(\beta) = \prod_{i=1}^n p_i^{Y_i}(1-p_i)^{1-Y_i}$
+\end{itemize}
+
+%-----------------------------------------------------------
+% POISSON REGRESSION
+%-----------------------------------------------------------
+\section{Poisson Regression}
+\begin{itemize}
+  \item Model: $Y \sim \mathrm{Poisson}(\mu)$, $E[Y]=\mu$, $\mathrm{Var}(Y)=\mu$.
+  \item \textbf{Log link:} $\displaystyle \log(\mu) = \eta = X\beta,\quad \mu=e^\eta$.
+  \item \textbf{Interpretation:} $\beta_j$ = change in log‐rate per unit $X_j$, so $e^{\beta_j}$ = multiplicative factor.
+  \item \textbf{Check:} If $\mathrm{Var}(Y) > E[Y]$, consider quasi‐Poisson or negative‐binomial.
+\end{itemize}
+
+%-----------------------------------------------------------
+% TRANSFORMATIONS & DIAGNOSTICS
+%-----------------------------------------------------------
+\section{Transformations \& Diagnostics}
+\begin{itemize}
+  \item \textbf{Why?} Check/fix linear‐model assumptions: linearity, homoskedasticity, Normal errors.
+  \item \textbf{Residual plots:} Plot $e_i=Y_i-\hat Y_i$ vs.
+    \begin{itemize}
+      \item Fitted values: curvature ⇒ non‐linearity.
+      \item Predictors/fitted: funnel ⇒ heteroskedasticity.
+    \end{itemize}
+  \item \textbf{Transformations} (log, $\sqrt{\cdot}$, Box–Cox, …):
+    \begin{itemize}
+      \item Straighten relationships, stabilize variance, reduce skew.
+      \item Apply to $Y$, to $X$, or both; refit, re‐check plots.
+      \item Note: coefficients now on transformed scale (e.g.\ $\log X$).
+    \end{itemize}
+  \item \textbf{Residual SD} ($s_e$): typical prediction error—lower $s_e$ means tighter fit.
+\end{itemize}
+
+%-----------------------------------------------------------
+% REGULARISATION & CROSS-VALIDATION
+%-----------------------------------------------------------
+\section{Regularisation \& Cross-Validation}
+\begin{itemize}
+  \item \textbf{Overfitting:} Model captures noise → poor generalization.
+  \item \textbf{Cross‐Validation (CV):}
+    \begin{itemize}
+      \item Split data into $k$ folds.
+      \item For each fold: train on $k-1$ folds, test on the held‐out fold.
+      \item Compute test metric (e.g.\ MSE) for each fold; average → CV error.
+      \item Compare models/penalties by CV error; CV error ≫ training error → overfitting.
+    \end{itemize}
+  \item \textbf{Regularisation:} Add penalty $\lambda\times(\text{penalty})$ to loss: $\displaystyle \text{obj} = \text{loss} + \lambda\,\text{penalty}.$
+    \begin{itemize}
+      \item Ridge: $\lambda\|\beta\|_2^2$.
+      \item Lasso: $\lambda\|\beta\|_1$.
+      \item Elastic‐net: combination of $\ell_1$ and $\ell_2$.
+      \item Poisson $\ell_2$: for count‐data penalisation.
+    \end{itemize}
+  \item Choose $\lambda$ by CV to minimize CV error.
+\end{itemize}
+
+%-----------------------------------------------------------
+% MISCELLANEOUS FORMULAE
+%-----------------------------------------------------------
+\section{Log and Prod Rules}
+\begin{itemize}
+  \item $\displaystyle \log(ab)=\log a+\log b,\quad \log(a/b)=\log a - \log b,\quad \log(a^c)=c\,\log a$.
+  \item $\displaystyle \log\bigl(\prod_i f_i\bigr) = \sum_i \log f_i, \prod_{i=1}^n c = c^n, \prod_{i=1}^n c^{x_i} = c^{\sum x_i}$
+\end{itemize}
+
+\vfill\null
+\end{multicols}
+
+\vspace{0.2em}
+\hrule
+\vspace{0.1em}
+
+
+
+\vspace{0.2em}
+\hrule
+\vspace{0.1em}
+\begin{center}\scriptsize Last updated: \today\end{center}
+
+\end{document}

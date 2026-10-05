@@ -1,0 +1,593 @@
+\documentclass[10pt,landscape,fleqn]{article}
+
+%===========================================================
+% Encoding and Fonts (for XeLaTeX)
+%===========================================================
+\usepackage{fontspec}
+\setmainfont{Latin Modern Roman}
+
+%===========================================================
+% Page layout
+%===========================================================
+\usepackage[margin=0.3in]{geometry}
+\usepackage{multicol}
+\raggedcolumns
+\setlength{\columnsep}{0.08in}  % reduced column separation
+\setlength{\columnseprule}{0.1pt}
+\setlength{\mathindent}{0pt}   % no indent on displayed math
+
+%===========================================================
+% Colors
+%===========================================================
+\usepackage{xcolor}
+\definecolor{sectioncolor}{RGB}{0,102,204}
+\definecolor{cmdcolor}{RGB}{153,0,0}
+\definecolor{keywordcolor}{RGB}{0,102,0}
+\definecolor{varcolor}{RGB}{102,0,153}
+\definecolor{opcolor}{RGB}{204,102,0}
+
+%===========================================================
+% Hyperlinks and References
+%===========================================================
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=sectioncolor,
+  urlcolor=blue,
+  citecolor=sectioncolor
+}
+
+%===========================================================
+% Lists and spacing
+%===========================================================
+\usepackage{enumitem}
+\setlist{nosep,leftmargin=*,itemsep=0pt,topsep=0pt,partopsep=0pt,parsep=0pt}
+
+\usepackage{titlesec}
+% Compact section formatting with color
+\titleformat{\section}
+  {\bfseries\color{sectioncolor}\Large}
+  {}{0pt}{}
+\titlespacing*{\section}{0pt}{1ex}{0.5ex}
+
+\titleformat{\subsection}
+  {\bfseries\color{sectioncolor}\normalsize}
+  {}{0pt}{}
+\titlespacing*{\subsection}{0pt}{0.75ex}{0.25ex}
+
+\titleformat{\subsubsection}
+  {\bfseries\color{sectioncolor}\small}
+  {}{0pt}{}
+\titlespacing*{\subsubsection}{0pt}{0.5ex}{0.15ex}
+
+%===========================================================
+% Math and symbols
+%===========================================================
+\usepackage{amsmath,amsfonts,amssymb,textcomp}
+
+%===========================================================
+% Verbatim and graphics
+%===========================================================
+\usepackage{graphicx,verbatim}
+
+%===========================================================
+% Tables (to define \toprule, \midrule, \bottomrule)
+%===========================================================
+\usepackage{booktabs}
+
+%===========================================================
+% Table spacing
+%===========================================================
+\renewcommand{\arraystretch}{0.9}
+
+%===========================================================
+% Custom commands
+%===========================================================
+\newcommand{\bigO}[1]{\ensuremath{\mathcal{O}(#1)}}
+\newcommand{\textcode}[1]{\texttt{#1}}
+\newcommand{\cmd}[1]{\textbf{\texttt{\textcolor{cmdcolor}{#1}}}}
+\newcommand{\keyword}[1]{\textbf{\textcolor{keywordcolor}{#1}}}
+\newcommand{\var}[1]{\emph{\textcolor{varcolor}{#1}}}
+\newcommand{\op}[1]{\textit{\textcolor{opcolor}{#1}}}
+
+%===========================================================
+% Numbering depth
+%===========================================================
+\setcounter{secnumdepth}{3}
+
+%===========================================================
+% No page numbers
+%===========================================================
+\pagestyle{empty}
+
+%===========================================================
+% Begin Document
+%===========================================================
+\begin{document}
+\scriptsize
+
+\begin{multicols}{3}
+
+\begin{center}
+  {\Large\bfseries Finance Final Cheat‐Sheet}\\
+  \scriptsize\emph{Symbols \& “Trigger” words guide you to the right section.}
+\end{center}
+
+% =============================================================
+% 1  Core Concepts & Decision Focus
+\section*{1 Core Concepts \& Decision Focus}
+
+\textbf{Overall Goal:} \emph{Maximize current share price (market value of equity).}
+
+\textbf{Three Fundamental Decisions:}
+\begin{itemize}
+  \item \textbf{Capital Budgeting} – “What investments (projects/expansions) should we undertake?” $\to$ apply NPV, IRR.
+  \item \textbf{Capital Structure} – “How to finance (debt vs. equity)?” $\to$ determine WACC, debt/equity mix.
+  \item \textbf{Working Capital Mgmt} – “How to manage short‐term assets/liabilities (cash, inventory, AR)?” $\to$ ensure liquidity.
+\end{itemize}
+
+\textbf{Book vs Market Value:}
+\begin{itemize}
+  \item \emph{Book Value:} historical‐cost accounting figures. 
+  \item \emph{Market Value:} current worth (incl. intangibles); basis for decision‐making.
+\end{itemize}
+
+\textbf{Agency Problem:} managers may not always act in owners’ (shareholders’) best interests – align incentives.
+
+\subsection*{Key Definitions / “General Vocab”}
+\begin{description}[leftmargin=1.2cm,labelwidth=1cm,itemsep=1pt]
+  \item[Sunk Cost] Spent/committed in the past. \textbf{Ignore} in any forward decision.
+  \item[Opportunity Cost] Benefit foregone by choosing one alternative over another. \textbf{Include} as outflow.
+  \item[Side Effects / Externalities] 
+    \begin{itemize}
+      \item \emph{Erosion:} New project reduces cash flows of existing operations – \textbf{Include} net loss.
+      \item \emph{Synergy:} New project increases cash flows elsewhere – \textbf{Include} net gain.
+    \end{itemize}
+  \item[Allocated Overhead] Only \textbf{include} if truly incremental (directly caused by project).
+  \item[Financing Costs (Interest, Dividends)] \textbf{Exclude} from project CFs – embedded in discount rate.
+\end{description}
+
+\subsection*{Working Capital}
+\begin{itemize}
+  \item $\text{NWC} = \text{Current Assets} - \text{Current Liabilities}, \quad \Delta\text{NWC}_t = \text{NWC}_t - \text{NWC}_{t-1}.$
+\end{itemize}
+Initial increase in NWC is a cash \emph{outflow} – recover in final year as \emph{inflow}.
+
+% =============================================================
+% 2  Time Value of Money (TVM Toolkit)
+\section*{2 TVM Toolkit}
+
+\textbf{Notation:}
+\begin{itemize}
+  \item $PV = \frac{FV}{(1+r)^n}, \quad FV = PV\,(1+r)^n.$
+  \item $r = \text{rate per period}, \quad n = \text{total \# of periods}.$
+\end{itemize}
+
+\textbf{Always match:} 
+\begin{itemize}
+  \item $r = \text{rate per period}, \quad n = \text{total \# of periods}.$
+\end{itemize}
+
+\subsection*{APR vs Periodic Rate vs EAR}
+\begin{itemize}
+  \item \emph{APR:} quoted annual rate. 
+  \item \emph{Periodic Rate:} $R_{\mathrm{per}} = \tfrac{\mathrm{APR}}{m}$ if compounding $m$ times/yr. 
+  \item \emph{EAR:} $EAR = (1 + R_{\mathrm{per}})^m - 1$ – used to compare options with different compounding.
+\end{itemize}
+\begin{itemize}
+  \item $\text{If APR given and }m>1:\quad r = R_{\mathrm{per}},\quad n = (\text{years}) \times m.$
+\end{itemize}
+\textbf{Example (Monthly Compounding):} Suppose APR = 12\%, compounding monthly ($m = 12$). Then
+\begin{itemize}
+  \item $r = \frac{0.12}{12} = 0.01, \quad n = (\text{years}) \times 12.$
+\end{itemize}
+
+\subsection*{Ordinary Annuity (payments at end of each period)}
+\begin{itemize}
+  \item $PV_{\mathrm{ann}} = C\,\frac{1 - (1+r)^{-n}}{r}, \quad FV_{\mathrm{ann}} = C\,\frac{(1+r)^{n} - 1}{r}.$
+  \item $C = PV \cdot \frac{r}{1 - (1+r)^{-n}} \quad (\text{loan payment formula}).$
+\end{itemize}
+\textbf{Example:} For a 5-year loan with APR = 6\% and monthly payments ($m=12$), $r = 0.06/12 = 0.005$, $n = 5\times12 = 60$.
+
+\subsection*{Perpetuities}
+\begin{itemize}
+  \item $PV_{\mathrm{perpetuity}} = \frac{C}{r}, \quad PV_{\mathrm{growing\,perpetuity}}\,(g<r) = \frac{C_1}{\,r - g\,}, \quad C_1=\text{first payment}.$
+\end{itemize}
+
+% =============================================================
+% 3  Bond Valuation
+\section*{3 Bond Valuation}
+
+\textbf{Price of a Bond:}
+\begin{itemize}
+  \item $P = \sum_{t=1}^n \frac{C}{(1+r)^t} + \frac{F}{(1+r)^n},$ \\
+    where
+    \begin{itemize}
+      \item $F=$ Face (par) value,
+      \item $C=$ Coupon payment per period,
+      \item $r=$ YTM per period,
+      \item $n=$ \# of periods.
+    \end{itemize}
+\end{itemize}
+
+\subsection*{Semiannual Coupon Bonds}
+\begin{itemize}
+  \item $n = (\text{years to maturity})\times 2, \quad r = \frac{\text{annual YTM}}{2}, \quad C = \frac{\text{annual coupon rate} \times F}{2}.$
+\end{itemize}
+\textbf{Worked Micro‐Example:} Consider a 4‐year bond with face value \$1,000, annual coupon rate 8\%, and YTM = 6\%. Since semiannual:
+\begin{itemize}
+  \item $n = 4 \times 2 = 8,\quad r = \frac{0.06}{2} = 0.03,\quad C = \frac{0.08 \times 1000}{2} = 40.$
+\end{itemize}
+\begin{align*}
+  P &= \sum_{t=1}^{8} \frac{40}{(1+0.03)^t} + \frac{1000}{(1+0.03)^8} \\
+    &= 40\left[\frac{1 - (1.03)^{-8}}{0.03}\right] + 1000\,(1.03)^{-8}.
+\end{align*}
+Students should set the financial calculator to N=8, I/Y=3, PMT=40, FV=1000.
+
+\subsection*{Valuing Bonds Between Coupon Dates}
+\subsubsection*{Accrued Interest \& Pricing Between Coupons}
+When purchasing a bond between coupon dates, the buyer owes accrued interest (AI) to the seller:
+\begin{itemize}
+  \item $AI = C_{\mathrm{period}} \times \frac{\text{days since last coupon}}{\text{days in coupon period}}.$
+\end{itemize}
+\begin{itemize}
+  \item \emph{Clean Price (Quoted Price)}: Price excluding accrued interest.
+  \item \emph{Dirty Price (Invoice Price)}: $\text{Dirty Price} = \text{Clean Price} + AI.$ The buyer pays the dirty price.
+\end{itemize}
+
+\textbf{Worked Micro‐Example:} Suppose a 5‐year semiannual bond, \$1,000 face, 10\% annual coupon (so \$50 every six months), with next coupon date in 45 days, coupon period = 182 days. If the clean price (discounted value of future CFs) is \$1,020:
+\begin{itemize}
+  \item $AI = 50 \times \frac{45}{182} \approx 50 \times 0.2473 = \$12.37.$
+  \item $\text{Dirty Price} = 1020 + 12.37 = \$1032.37.$
+\end{itemize}
+
+% =============================================================
+% 4  Equity Valuation
+\section*{4 Equity Valuation}
+
+\subsection*{Dividend Discount Models (DDM)}
+\begin{itemize}
+  \item \textbf{Zero Growth (Perpetuity):} 
+    \begin{itemize}
+      \item $P_0 = \frac{D}{r} \quad (\text{constant }D).$
+    \end{itemize}
+  \item \textbf{Constant Growth (Gordon Growth Model):} 
+    \begin{itemize}
+      \item $D_{t} = D_0(1+g)^t, \quad D_1 = D_0(1+g), \quad r > g.$
+      \item $P_0 = \frac{D_1}{\,r - g\,} = \frac{D_0(1+g)}{\,r - g\,}.$
+    \end{itemize}
+    \textbf{Define:} $P_0$ = price today; $D_0$ = dividend just paid; $D_1$ = next period dividend; $r$ = required return; $g$ = constant growth rate.
+  \item \textbf{Limited Horizon (Finite Holding Period):} 
+    \begin{itemize}
+      \item $P_0 = \sum_{t=1}^{n} \frac{D_t}{(1+r)^t} + \frac{P_n}{(1+r)^n},$ \\
+        where $P_n$ is the sale price at the end of period $n$ (often computed via one of the perpetuity or growth formulas).
+    \end{itemize}
+  \item \textbf{Multi‐Stage Growth:} 
+    \begin{itemize}
+      \item Present value of explicit high‐growth dividends + PV of terminal value (constant‐growth perpetuity at end of high‐growth period).
+    \end{itemize}
+\end{itemize}
+
+\textbf{When to use which model (“Trigger Words”):}
+\begin{itemize}
+  \item “Pays forever, fixed \$D” $\to$ Zero Growth (Perpetuity).
+  \item “Dividends grow at a constant rate” $\to$ Gordon Growth.
+  \item “Sell after $n$ years” or “finite horizon” $\to$ Limited Horizon model.
+\end{itemize}
+
+% =============================================================
+% 5  Investments, Risk & Portfolios
+\section*{5 Investments, Risk \& Portfolios}
+
+\subsection*{Return on an Asset}
+\begin{itemize}
+  \item $R = \frac{P_t - P_{t-1} + CF_t}{P_{t-1}}.$
+\end{itemize}
+\textbf{Portfolio Weights:} $w_i =$ proportion of total value in asset, $i$, $w_p = \sum_i w_i = 100\%$
+
+\subsection*{Expected Portfolio Return}
+\begin{itemize}
+  \item $E(R_p) = \sum_i w_i\,E(R_i).$ \textit{Multiple each weight by expected return and add them all}
+\end{itemize}
+
+\subsection*{Risk}
+\begin{itemize}
+  \item \emph{Systematic (Market) Risk:} affects large swaths of assets; \textbf{non‐diversifiable}. Captured by $\beta$.  
+  \item \emph{Idiosyncratic (Unsystematic) Risk:} firm‐specific; \textbf{diversifiable}.
+  \item "risky" if $\beta > 1$
+\end{itemize}
+\textbf{Diversification}: Reduces unsystematic risk by combining assets whose idiosyncratic risks offset one another.
+
+\subsection*{Portfolio Variance / Std Dev (two‐asset example)}
+\begin{itemize}
+  \item $\sigma_p^2 = w_A^2\sigma_A^2 + w_B^2\sigma_B^2 + 2\,w_Aw_B\,\sigma_{AB}.$
+\end{itemize}
+(For more assets, use the covariance matrix.)
+
+\subsection*{Beta}
+\begin{itemize}
+  \item $\beta_i = \frac{\operatorname{Cov}(R_i,R_m)}{\sigma_m^2}, \quad \beta_p = \sum_i w_i\,\beta_i.$
+\end{itemize}
+
+\subsection*{CAPM (Capital Asset Pricing Model)}
+\begin{itemize}
+  \item $E(R_i) = R_f + \beta_i\,(E(R_m) - R_f).$
+  \item $\text{Market Risk Premium} = E(R_m) - R_f.$
+\end{itemize}
+\textbf{Define:} $R_f$ = risk‐free rate; $E(R_m)$ = expected market return; $\beta_i$ = beta of asset $i$; $E(R_i)$ = required return on asset $i$.
+
+\subsection*{Efficient Market Hypothesis (EMH)}
+\begin{itemize}
+  \item \textbf{Weak Form:} Prices reflect all past trading data.
+  \item \textbf{Semi‐Strong Form:} Prices reflect all publicly available information.
+  \item \textbf{Strong Form:} Prices reflect all information (public \& private).
+  \item Slow Moving apital:
+  \begin{itemize}
+  \item Delayed reallocation of investment funds. Makes difficult for market to correct mispricing
+  \item Can lead to prolonged periods where asset prices change from there fundamental values, reducing efficienticy.
+  \end{itemize}
+\end{itemize}
+\textbf{Implications:} If markets are efficient, it is impossible to consistently earn abnormal returns through publicly available information. However, cognitive biases (e.g., overconfidence) or transaction costs can cause deviations from perfect efficiency. Says asset process fully reflect all available information (Consistant higher than average returns are impossible). 
+
+% =============================================================
+% 6  Investment Criteria (NPV, IRR, Payback)
+\section*{6 Investment Criteria}
+
+\subsection*{Net Present Value (NPV)}
+\begin{itemize}
+  \item $NPV = \sum_{t=0}^n \frac{CF_t}{(1+r)^t}, \quad (CF_0 \text{ often negative}).$
+  \item \textbf{Decision: Accept if }$NPV > 0.$
+\end{itemize}
+\textbf{Comparison of Rules:} NPV directly measures added value; IRR may give multiple rates or conflicting rankings for mutually exclusive projects. NPV is generally preferred for decision-making when comparing projects.
+
+\subsection*{Internal Rate of Return (IRR)}
+\begin{itemize}
+  \item $0 = \sum_{t=0}^n \frac{CF_t}{(1 + IRR)^t}.$
+  \item \text{Decision: Accept if }$IRR > r_{\mathrm{required}}.$
+\end{itemize}
+\emph{Pitfalls:} multiple IRRs if non‐conventional CFs; IRR ranking can conflict with NPV when projects are mutually exclusive.
+
+\subsection*{Payback Period}
+\begin{itemize}
+  \item $\text{Payback} = k + \frac{|CumCF_k|}{CF_{k+1}},$ \\
+    where $k$ is last period with negative cumulative CF. Ignores TVM after payback.
+\end{itemize}
+
+% =============================================================
+% 7  Incremental Analysis (“What to Include/Ignore”)
+\section*{7 Incremental Analysis}
+
+\subsection*{Stand‐Alone Principle}
+Evaluate only \emph{incremental} CFs—those that occur \emph{only if} project is undertaken.
+
+\subsubsection*{Which CFs to Exclude (Ignore)}
+\begin{itemize}
+  \item \textbf{Sunk Costs:} Past expenditures (e.g., R\&D spent, consultant fee already paid). 
+  \item \textbf{Allocated Overhead:} Non‐incremental general overhead, unless directly caused by project.
+  \item \textbf{Financing Costs (Interest/Dividends):} Already captured by discount rate – don’t include as CF.
+\end{itemize}
+
+\subsubsection*{Which CFs to Include}
+\begin{itemize}
+  \item \textbf{Opportunity Costs:} e.g., market value of an owned but unused asset (land), lost cash flows if asset used elsewhere.
+  \item \textbf{Side Effects / Externalities:} 
+    \begin{itemize}
+      \item \textbf{Erosion:} reduced CFs from existing lines due to new project – subtract.
+      \item \textbf{Synergy:} additional CFs to existing lines – add.
+    \end{itemize}
+  \item \textbf{Change in NWC:} 
+    \begin{itemize}
+      \item $\Delta NWC = NWC_t - NWC_{t-1}.$
+      \item Initial increase in NWC is an outflow; recovery at end is an inflow.
+    \end{itemize}
+  \item \textbf{Capital Expenditures (CapEx):} purchase of new fixed assets ($-$); salvage receipts at end (ATSV).
+  \item \textbf{After‐Tax Salvage Value (ATSV):}
+    \begin{itemize}
+      \item $ATSV = SV - T_c\,(SV - BV),$ where $SV =$ sale price, $BV =$ book value, $T_c =$ corporate tax rate.
+    \end{itemize}
+\end{itemize}
+
+\end{multicols}
+
+\noindent\rule{\linewidth}{0.01pt}
+
+\begin{multicols}{2}
+
+\subsection*{Operating Cash Flow (Tax Shield Method)}
+\begin{itemize}
+  \item $OCF = (\text{Sales} - \text{Cash OpEx})\,(1 - T_c) + \text{Depreciation} \times T_c.$
+\end{itemize}
+
+% =============================================================
+% Full‐Width Project CF Schedule Table
+\noindent\begin{tabular}{l|cccc}
+\toprule
+\textbf{Item} & \textbf{Year 0} & \textbf{Year 1} & \(\cdots\) & \textbf{Year \(n\)} \\ \midrule
+Initial CapEx & \(-(\text{Cost of New Assets})\) &  &  &  \\
+Opportunity Cost & \(-(\text{Market Value of Used Asset})\) &  &  &  \\
+\(\Delta\,NWC\) & \(-(\text{Increase in NWC})\) & 0 & \(\cdots\) & \(+(\text{Recovery of NWC})\) \\
+Operating CF (OCF) & 0 & \(\text{OCF}_1\) & \(\cdots\) & \(\text{OCF}_n\) \\
+ATSV (Salvage) & 0 & 0 & \(\cdots\) & \(+(\text{ATSV})\) \\ \midrule
+\(\textbf{= Project CF}_t\) & \(CF_0\) & \(CF_1\) & \(\cdots\) & \(CF_n\) \\
+\bottomrule
+\end{tabular}
+
+
+
+% =============================================================
+% 8  Cost of Capital & WACC
+\section*{8 Cost of Capital \& WACC}
+\begin{multicols}{2}
+\subsection*{Cost of Equity}
+\textbf{CAPM:}
+\begin{itemize}
+  \item $R_e = R_f + \beta\,(E(R_m) - R_f).$
+  \item $R_e = \frac{D_1}{P_0} + g \quad (\text{if dividends are growing at rate }g).$
+\end{itemize}
+\textbf{Notes:}
+\begin{itemize}
+  \item $R_f$ = risk‐free rate.
+  \item $\beta$ = systematic risk of equity.
+  \item $E(R_m)$ = expected return on the market.
+  \item $D_1$ = next period dividend, $P_0$ = current price.
+\end{itemize}
+
+\subsection*{Cost of Debt}
+\begin{itemize}
+  \item After‐tax cost: $R_d\,(1 - T_c).$
+\end{itemize}
+\textbf{Note:} $R_d$ is typically observed from the YTM on the firm’s bonds, and $T_c$ is the corporate tax rate.
+
+\end{multicols}
+\end{multicols}
+
+\noindent\rule{\linewidth}{0.01pt}
+\begin{multicols*}{3}
+
+\subsection*{Weights}
+\begin{itemize}
+  \item $W_d = \frac{D}{D + E}, \quad W_e = \frac{E}{D + E}.$
+\end{itemize}
+\textbf{Note:} $E$ and $D$ should be market values of equity and debt, respectively.
+
+\subsection*{Weighted Average Cost of Capital (WACC)}
+\begin{itemize}
+  \item $WACC = W_e\,R_e + W_d\,R_d\,(1 - T_c).$
+\end{itemize}
+\textbf{Use:} Apply $WACC$ as the discount rate for projects that have risk similar to the firm’s average risk.  
+
+\subsection{Cost of Capital Notes}
+\textbf{Cost of Capital}
+\begin{itemize}
+  \item Changes for a particular firm over its lifetime
+  \item Is used to discount the cash flows of investment projects firms face
+  \item Depends on the firms' tax rates \& capital structure
+\end{itemize}
+% =============================================================
+% 9  Trigger Map & Symbols  
+\section*{9 Trigger Map \& Symbols}
+
+\subsection*{9.1 Trigger Words \& Where to Look}
+\tiny
+\begin{description}[leftmargin=1.2cm,labelwidth=1.2cm,itemsep=1pt]
+  %--- Existing entries (slightly reordered for clarity) ---
+  \item[\emph{long‐term investment/project evaluation}] 
+    Sec 6 (NPV/IRR/Payback) \& Sec 7 (Incremental CFs).
+  \item[\emph{financing mix / issuing bonds}] 
+    Sec 3 (Bond Valuation) \& Sec 8 (Cost of Capital).
+  \item[\emph{value today / grow to}] 
+    Sec 2 (TVM → \(PV/FV\)).
+  \item[\emph{equal payments / loan or mortgage payment}] 
+    Sec 2 (Annuities).
+  \item[\emph{payments forever / perpetuity}] 
+    Sec 2 (Perpetuity).
+  \item[\emph{quoted vs effective}] 
+    Sec 2 (APR/EAR).
+  \item[\emph{rate that makes NPV = 0}] 
+    Sec 6 (IRR).
+  \item[\emph{cost already paid}] 
+    Sec 7 (Sunk Costs).
+  \item[\emph{market value if sold / alternative use}] 
+    Sec 7 (Opportunity Cost).
+  \item[\emph{new product reduces old sales}] 
+    Sec 7 (Erosion).
+  \item[\emph{initial inventory investment}] 
+    Sec 7 (\(\Delta\)NWC).
+  \item[\emph{portfolio return/weights}] 
+    Sec 5 (Portfolio).
+  \item[\emph{systematic/idiosyncratic/market risk}] 
+    Sec 5 (Risk).
+  \item[\emph{beta/portfolio beta}] 
+    Sec 5 (Beta).
+  \item[\emph{CAPM / expected return (beta)}] 
+    Sec 5 (CAPM).
+  \item[\emph{diversification}] 
+    Sec 5 (Risk).
+  \item[\emph{risk premium / excess return}] 
+    Sec 5 (Risk Premium).
+  \item[\emph{EMH / efficient markets}] 
+    Sec 5 (EMH).
+  \item[\emph{slow‐moving capital}] 
+    Sec 5 (EMH). 
+    %— added because Q III.3 mentions “Slow‐Moving Capital”
+  \item[\emph{return volatility / std dev}] 
+    Sec 5 (Volatility).
+  \item[\emph{cost of equity / cost of debt / WACC}] 
+    Sec 8.
+  \item[\emph{NPV discount rate}] 
+    Sec 8 (WACC).
+  \item[\emph{sunk cost – property tax / license fee}] 
+    Sec 7 (Sunk Costs). 
+    %— added for Section III.2 context
+  \item[\emph{market value of land}] 
+    Sec 7 (Opportunity Cost). 
+    %— Q IV.6 references market value of lot
+  \item[\emph{revenue shifted from existing operations}] 
+    Sec 7 (Erosion). 
+    %— Q IV.6’s \$14,000 erosion
+\end{description}
+
+\subsection*{9.2 Symbol Key}
+\tiny
+\begin{multicols}{2}
+\begin{description}[leftmargin=1.4cm,labelwidth=1.2cm,itemsep=0.5pt]
+  \item[$A/R$] Accounts Receivable
+  \item[$AI$] Accrued Interest
+  \item[$APR$] Annual Percentage Rate
+  \item[$ATSV$] After‐Tax Salvage Value
+  \item[$\beta$] Beta (systematic risk)
+  \item[$BV$] Book Value
+  \item[$C$] Cash Flow; Annuity payment; Coupon payment; Cash OpEx
+  \item[$CapEx$] Capital Expenditure
+  \item[$CF_t$] Cash Flow at time \(t\)
+  \item[$CF_0$] Initial Cash Flow (often negative)
+  \item[$CL$] Current Liabilities
+  \item[$D$] Dividend per share
+  \item[$D_0$] Dividend just paid (at \(t=0\))
+  \item[$D_1$] Dividend expected at \(t=1\)
+  \item[$D_t$] Dividend in period \(t\)
+  \item[$Dep$] Depreciation
+  \item[$E(R)$] Expected Return (general)
+  \item[$E(R_m)$] Expected Return on Market
+  \item[$E(R_p)$] Expected Return of Portfolio
+  \item[$EAR$] Effective Annual Rate
+  \item[$EBIT$] Earnings Before Interest \& Taxes
+  \item[$F$] Face (Par) Value of a Bond
+  \item[$FV$] Future Value
+  \item[$g$] Growth rate (constant)
+  \item[$IRR$] Internal Rate of Return
+  \item[$m$] Compounding periods per year
+  \item[$n$] Total number of periods
+  \item[$NPV$] Net Present Value
+  \item[$NWC$] Net Working Capital (\(CA - CL\))
+  \item[$\Delta NWC$] Change in Net Working Capital
+  \item[$OCF$] Operating Cash Flow
+  \item[$P_0$] Price at time 0 (today)
+  \item[$P_t$] Price at time \(t\)
+  \item[$PV$] Present Value
+  \item[$R_f$] Risk‐free rate
+  \item[$R_d$] Cost of Debt (pre‐tax YTM on bonds) 
+    %— newly added for Q IV.7
+  \item[$R_e$] Cost of Equity 
+    %— newly added for Q IV.7 and IV.4(a)
+  \item[$R_i$] Return on asset \(i\)
+  \item[$R_m$] Market return
+  \item[$R_p$] Portfolio return
+  \item[$R_{\mathrm{per}}$] Periodic rate \(\bigl(=\frac{APR}{m}\bigr)\)
+  \item[$r$] Rate per period / Discount rate
+  \item[$r_{\mathrm{req}}$] Required rate of return
+  \item[$S$] Sales (Revenue)
+  \item[$SV$] Salvage Value (market)
+  \item[$\sigma$] Standard deviation (total risk)
+  \item[$\sigma^2$] Variance (total risk)
+  \item[$T_c$] Corporate tax rate
+  \item[$w_i$] Weight of asset \(i\) in portfolio
+  \item[$x$] Weight of a specific asset (e.g., in a two‐asset mix) 
+    %— Q IV.4 uses \(x\) for Microsoft’s weight
+  \item[$YTM$] Yield to Maturity (bond)
+\end{description}
+\end{multicols}
+
+\end{multicols*}
+
+\end{document}

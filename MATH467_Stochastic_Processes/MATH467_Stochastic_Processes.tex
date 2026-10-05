@@ -1,0 +1,339 @@
+\documentclass[8pt]{extarticle}
+
+% --- Packages ---
+\usepackage[paperwidth=8.5in, paperheight=11in,
+left=0.3in, right=0.3in, top=0.3in, bottom=0.3in]{geometry}
+\usepackage{multicol}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{titlesec}
+\usepackage{microtype}
+\usepackage{fontspec}
+
+% --- Layout tightening ---
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{1pt}
+\setlength{\columnsep}{8pt}
+\setlength{\columnseprule}{0.2pt}
+\setlength{\abovedisplayskip}{1pt}
+\setlength{\belowdisplayskip}{1pt}
+\setlength{\abovedisplayshortskip}{1pt}
+\setlength{\belowdisplayshortskip}{1pt}
+\setlist{nosep, leftmargin=*, labelsep=2pt, itemsep=0pt, topsep=0pt, partopsep=0pt}
+
+% --- Section formatting (compact) ---
+\titleformat{\section}{\bfseries\small\color{black!85}}{}{0pt}{}[\vspace{-2pt}\rule{\columnwidth}{0.4pt}]
+\titlespacing*{\section}{0pt}{2pt}{1pt}
+\titleformat{\subsection}{\bfseries\footnotesize}{}{0pt}{}
+\titlespacing*{\subsection}{0pt}{2pt}{0pt}
+
+% --- Shortcuts ---
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\PR}{\mathbb{P}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\diag}{\operatorname{diag}}
+\renewcommand{\b}[1]{\mathbf{#1}}
+\newcommand{\half}{\tfrac{1}{2}}
+\newcommand{\eps}{\varepsilon}
+
+\pagestyle{empty}
+
+\begin{document}
+	\footnotesize
+	\begin{multicols*}{3}
+		
+		% =====================================================================
+		\begin{center}
+			\textbf{\normalsize MARKOV CHAINS \& BROWNIAN MOTION --- Master Sheet}\\[-2pt]
+			{\scriptsize Ch.~1 \& Ch.~6 (Durrett)}
+		\end{center}
+		
+		\section*{1. Markov Property \& Transition Matrix}
+		
+		\textbf{Markov property:} for state space $S$,
+		\[\PR(X_{n+1}=j\mid X_n=i,X_{n-1},\dots)=\PR(X_{n+1}=j\mid X_n=i)=p(i,j).\]
+		$p(i,j)\ge 0$, $\sum_j p(i,j)=1$ (rows of $P$ sum to 1).
+		
+		\textbf{Distribution at time $n$:} row vector $\nu_n=\nu_0 P^n$.\\
+		\textbf{$n$-step:} $p^n(i,j)=(P^n)_{ij}$.\\
+		\textbf{Chapman--Kolmogorov:} $p^{m+n}(i,j)=\sum_k p^m(i,k)p^n(k,j)$, i.e.\ $P^{m+n}=P^mP^n$.
+		
+		\textbf{Verifying a chain:} write $X_n$ in terms of underlying r.v.s; if conditioning on $X_{n-1}$ alone is \emph{not enough} to fix the distribution of $X_n$ (older info needed), it is \emph{not} Markov. Cue: same $X_{n-1}$ producing different next-step distributions $\Rightarrow$ NOT a chain.
+		
+		\textbf{Building $P$ from a story:} list states $\to$ enumerate cases for each transition $\to$ multiply probabilities of independent draws. Verify each row sums to 1.
+		
+		\section*{2. State Classification}
+		
+		\textbf{Reach:} $i\to j$ iff $\exists\,n\ge 0:\ p^n(i,j)>0$.\\
+		\textbf{Communicate:} $i\leftrightarrow j$ iff $i\to j$ and $j\to i$ (equiv.\ rel.\ $\Rightarrow$ classes).\\
+		\textbf{Closed set $C$:} no exits; $\sum_{j\in C}p(i,j)=1$ $\forall i\in C$.\\
+		\textbf{Irreducible:} one class.\\
+		\textbf{Absorbing state:} $p(i,i)=1$.\\
+		\textbf{Transient:} $\PR(\text{return}\mid X_0=i)<1\Rightarrow\E[\text{visits}]<\infty$.\\
+		\textbf{Recurrent:} $\PR(\text{return}\mid X_0=i)=1$.\\
+		\textbf{Period:} $d(i)=\gcd\{n\ge 1:p^n(i,i)>0\}$. Aperiodic $\Leftrightarrow d=1$. Test: any self-loop $\Rightarrow d=1$, else find two cycles of coprime length.
+		
+		\textbf{Decomposition (finite):} $S=T\cup R_1\cup\cdots\cup R_k$, $T$ transient, each $R_\ell$ irreducible closed recurrent.
+		
+		\textbf{Finite-chain facts:}
+		\begin{itemize}
+			\item Every closed set contains a recurrent state.
+			\item Every recurrent class is closed.
+			\item Transient states never form a closed set.
+			\item Irreducible finite chain $\Rightarrow$ all states recurrent.
+		\end{itemize}
+		
+		\textbf{Procedure:} draw the directed graph from $P$; find SCCs; an SCC with no outgoing edges is closed/recurrent; others transient.
+		
+		\section*{3. Stationary Distribution $\pi$}
+		
+		\textbf{Definition:} $\pi P=\pi$, $\pi_i\ge 0$, $\sum_i\pi_i=1$.
+		
+		\textbf{Linear system:} solve $\pi(P-I)=\b 0$ with $\sum\pi_i=1$. Drop one row of $\pi(P-I)=0$ (rank-deficient), replace with normalization. Row-reduce.
+		
+		\textbf{Detailed balance (reversibility):} $\pi_i\,p(i,j)=\pi_j\,p(j,i)\ \forall i,j\Rightarrow\pi$ stationary. Use whenever the graph is a tree, birth-death, or random walk on a graph. \emph{Sufficient, not necessary.}
+		
+		\textbf{Existence/uniqueness:}
+		\begin{itemize}
+			\item Irreducible finite chain: unique $\pi$, $\pi_i>0$.
+			\item Reducible: each recurrent class $R_\ell$ has its own $\pi^{(\ell)}$ supported on $R_\ell$. Set of stationary distributions = convex hull $\{\sum\alpha_\ell\pi^{(\ell)}\}$.
+		\end{itemize}
+		
+		\textbf{Mean return time:} for irreducible positive recurrent chain, $\E_i[T_i]=1/\pi_i$ where $T_i=\min\{n\ge 1:X_n=i\}$. 
+		
+		\textbf{Two-state shortcut:} $P=\begin{psmallmatrix}1-a & a\\ b & 1-b\end{psmallmatrix}\Rightarrow\pi=\bigl(\tfrac{b}{a+b},\tfrac{a}{a+b}\bigr).$
+		
+		\section*{4. Convergence to Equilibrium}
+		
+		\textbf{Convergence theorem (irreducible $+$ aperiodic):} $p^n(i,j)\to\pi_j$ for all $i,j$.
+		
+		\textbf{Periodic case:} $\lim p^n$ DNE; but Cesaro avg $\frac1n\sum_{k=1}^n p^k(i,j)\to\pi_j$ still.
+		
+		\textbf{Bipartite ($d=2$):} $P=\begin{psmallmatrix}0 & A\\ B & 0\end{psmallmatrix}\Rightarrow P^2=\begin{psmallmatrix}AB & 0\\ 0 & BA\end{psmallmatrix}.$ Find $u$ with $u(AB)=u$; set $v=uA$ (then $v(BA)=v$). Stationary of $P$: $\frac12(u,v)$. Stationary set of $P^2$: $\{\alpha(u,0)+(1-\alpha)(0,v):\alpha\in[0,1]\}$.
+		
+		\textbf{Convergence test:} (1) one communicating class \emph{and} (2) aperiodic. Verify both.
+		
+		\section*{5. Hitting Probabilities \& Expected Times}
+		
+		Let $A\subset S$, $T_A=\min\{n\ge 0:X_n\in A\}$.
+		
+		\textbf{Hit prob $h_i=\PR_i(T_A<\infty)$:}
+		\begin{itemize}
+			\item $h_i=1$ for $i\in A$;
+			\item $h_i=\sum_j p(i,j)h_j$ for $i\notin A$;
+			\item $h_i=0$ if $i$ in a closed set disjoint from $A$.
+		\end{itemize}
+		
+		\textbf{Expected hit time $\tau_i=\E_i[T_A]$:} $\tau_i=0$ for $i\in A$;\ $\tau_i=1+\sum_j p(i,j)\tau_j$ for $i\notin A$.
+		
+		\textbf{General $\lim p^n(i,j)$:}
+		\begin{enumerate}
+			\item Identify recurrent classes $R_1,\dots,R_k$.
+			\item Compute $h^{(\ell)}_i=\PR_i(\text{absorbed in }R_\ell)$ for each transient $i$.
+			\item Compute stationary $\pi^{(\ell)}$ on each $R_\ell$.
+			\item $\lim p^n(i,j)=h^{(\ell)}_i\cdot\pi^{(\ell)}_j$ when $j\in R_\ell$ ($R_\ell$ aperiodic).
+		\end{enumerate}
+		
+		\section*{6. Two-State Convergence}
+		
+		For $P=\begin{psmallmatrix}1-a & a\\ b & 1-b\end{psmallmatrix}$, $p_n=\PR(X_n=1)$. Markov $\Rightarrow$
+		\[p_{n+1}=(1-a)p_n+b(1-p_n)=(1-a-b)p_n+b.\]
+		Iterate / geom.\ series ($r=1-a-b$):
+		\[\boxed{\,p_n=\tfrac{b}{a+b}+(1-a-b)^n\!\left(p_0-\tfrac{b}{a+b}\right).}\]
+		Converges \emph{exponentially} to $b/(a+b)$ when $a+b<2$. Rate: $|1-a-b|$. Trick: subtract steady-state from both sides; the fixed point cancels.
+		
+		\section*{7. Special Chains}
+		
+		\subsection*{Gambler's Ruin}
+		$\{0,\dots,N\}$, $0$ \& $N$ absorbing. $p(i,i+1)=p$, $p(i,i-1)=q=1-p$. Ruin: $\PR_i(T_0<T_N)=\frac{(q/p)^i-(q/p)^N}{1-(q/p)^N}\ (p\ne q)$, $\frac{N-i}{N}\ (p=q=\half)$.
+		
+		\subsection*{Birth--Death Chain}
+		$p(i,i+1)=p_i$, $p(i,i-1)=q_i$, $p(i,i)=r_i$. Detailed balance: $\pi_{i+1}=\pi_i\,p_i/q_{i+1}$, so $\pi_i=\pi_0\prod_{k=0}^{i-1}p_k/q_{k+1}$.
+		
+		\subsection*{Random Walk on Graph}
+		$p(i,j)=1/\deg(i)$ if $i\sim j$. Stationary: $\pi_i=\deg(i)/(2|E|)$. Detailed balance auto.
+		
+		\subsection*{Ehrenfest / Urn Exchange}
+		$2m$ balls total, $b$ black; state $i=\#$black in urn~1.
+		$p(i,i+1)=\tfrac{(m-i)(b-i)}{m^2}$, $p(i,i-1)=\tfrac{i\,(m-b+i)}{m^2}$, $p(i,i)=$ rest. Stationary:
+		\[\pi(i)=\binom{b}{i}\binom{2m-b}{m-i}\!\Big/\!\binom{2m}{m}\quad\text{(hypergeometric)}.\]
+		Intuition: equilibrium urn 1 = uniform random size-$m$ subset of all $2m$ balls.
+		
+		\subsection*{Coupon Collector / Dice}
+		Roll $n$-sided die; $X_n=\#$distinct values seen. $p(i,i+1)=(n-i)/n$, $p(i,i)=i/n$. $\E[T_{i\to i+1}]=n/(n-i)\Rightarrow\E[T_n]=nH_n$. $n=6\Rightarrow 6H_6\approx 14.7$.
+		
+		\section*{8. Stationary-Distribution Recipes}
+		
+		\textbf{A. Full system.} Stack $\begin{bmatrix}P^\top-I\\ \b 1^\top\end{bmatrix}\!\pi=\begin{bmatrix}\b 0\\ 1\end{bmatrix}$, solve.
+		
+		\textbf{B. Detailed balance.} Try $\pi_i p(i,j)=\pi_j p(j,i)$; if consistent, telescope along a spanning tree.
+		
+		\textbf{C. Block / bipartite.} $P=\begin{psmallmatrix}0 & A\\ B & 0\end{psmallmatrix}\Rightarrow$ solve $u(AB)=u$, $v=uA$.
+		
+		\textbf{D. Multi-class.} Solve on each recurrent class. Convex hull is full set.
+		
+		\section*{9. Common Pitfalls}
+		
+		\begin{itemize}
+			\item ``Closed'' $\ne$ ``absorbing'' (set vs.\ single state).
+			\item Detailed balance is sufficient, not necessary.
+			\item Don't forget normalization $\sum\pi_i=1$.
+			\item For periodic chain, use Cesaro avg or block-decompose $P^d$.
+			\item Transient $j$ does \emph{not} appear in $\lim p^n(\cdot,j)$.
+			\item Multi-class: weight $\pi^{(\ell)}_j$ by hit prob $h^{(\ell)}_i$.
+			\item ``Same start, different futures'' $\Rightarrow$ not Markov.
+		\end{itemize}
+		
+		\columnbreak
+		
+		\section*{10. Independent Normals (Ch.~6.10)}
+		
+		If $X\sim N(\mu_1,\sigma_1^2)\perp Y\sim N(\mu_2,\sigma_2^2)$:
+		$aX+bY\sim N(a\mu_1+b\mu_2,\ a^2\sigma_1^2+b^2\sigma_2^2).$
+		
+		If $X,Y\sim N(0,\sigma^2)$ iid, $U=\tfrac{X+Y}{2}$, $V=\tfrac{X-Y}{2}$ are iid $N(0,\sigma^2/2)$ since $\Cov(U,V)=\tfrac14[\Var X-\Var Y]=0$ and \emph{joint normal $+$ uncorrelated $\Rightarrow$ independent}.
+		
+		\textbf{Linear-combo identities:}
+		\begin{itemize}
+			\item $\E[aX+bY]=a\E X+b\E Y$ (always linear).
+			\item $\Var(aX+bY)=a^2\Var X+b^2\Var Y+2ab\Cov(X,Y)$.
+			\item $\Cov(aX+bY,Z)=a\Cov(X,Z)+b\Cov(Y,Z)$.
+			\item Uncorrelated $\not\Rightarrow$ independent generally; for joint Gaussians it does.
+		\end{itemize}
+		
+		\section*{11. Brownian Motion (Ch.~6.11a)}
+		
+		\textbf{Definition} (standard BM on $[0,\infty)$):
+		\begin{enumerate}
+			\item $B(0)=0$;
+			\item Independent increments: for $0\le t_0<\cdots<t_k$, $B(t_i)-B(t_{i-1})$ are mutually independent;
+			\item Gaussian increments: $B(t)-B(s)\sim N(0,t-s)$, $t>s$;
+			\item Sample paths $t\mapsto B(t)$ continuous a.s.
+		\end{enumerate}
+		
+		\textbf{Key formulas:} $\E[B(t)]=0$, $\Var[B(t)]=t$, $\Cov(B(s),B(t))=\min(s,t)$. The vector $(B(t_1),\dots,B(t_k))$ is jointly Gaussian, $\Sigma_{ij}=\min(t_i,t_j)$.
+		
+		\textbf{Symmetries:} $-B(t)$, $cB(t/c^2)$ (Brownian scaling), $tB(1/t)$ (time inversion, with $B(0):=0$) are all standard BMs. Markov property: $B(t+\cdot)-B(t)$ is BM independent of $\{B(s):s\le t\}$.
+		
+		\textbf{L\'evy / dyadic construction on $[0,1]$:} let $\{Y_{n,m}\}$ iid $N(0,1)$. Set $B(0)=0$, $B(1)=Y_{0,1}$. Recursively for $0\le m\le 2^n-1$:
+		\[B\!\left(\tfrac{2m+1}{2^{n+1}}\right)=\tfrac12\!\left[B\!\left(\tfrac{m+1}{2^n}\right)+B\!\left(\tfrac{m}{2^n}\right)\right]+2^{-n/2-1}Y_{n,m}.\]
+		
+		\textbf{Why this matters:} BM is defined on dyadic rationals with the right increment law; continuity follows from a.s.\ uniform convergence of the random series (Kolmogorov / Borel--Cantelli).
+		
+		\section*{12. Normal Tail Bound (Ch.~6.9)}
+		
+		For $0<x\le y$:
+		\[(1-3y^{-4})e^{-y^2/2}\le e^{-y^2/2}\le e^{-x^2/2}e^{-x(y-x)}.\]
+		\emph{Left:} $1-3y^{-4}\le 1$ since $y^{-4}\ge 0$.\\
+		\emph{Right:} take logs $\Rightarrow(y-x)^2\ge 0$.
+		
+		Integrate over $y\in[x,\infty)$:
+		\[\boxed{\,\left(\tfrac{1}{x}-\tfrac{1}{x^3}\right)e^{-x^2/2}\le\int_x^\infty\!e^{-y^2/2}dy\le\tfrac{1}{x}e^{-x^2/2}\,}\]
+		
+		\textbf{Tricks:} LHS antiderivative -- combine $\frac{d}{dy}\!\left(-\frac{e^{-y^2/2}}{y}\right)=\frac{e^{-y^2/2}}{y^2}+e^{-y^2/2}$ and $\frac{d}{dy}\!\left(\frac{e^{-y^2/2}}{y^3}\right)$ to get the $-3y^{-4}$ piece. RHS: $u=y-x\Rightarrow\int_0^\infty e^{-xu}du=1/x$.
+		
+		Mills' ratio corollary: $\PR(Z>x)\sim\frac{1}{x\sqrt{2\pi}}e^{-x^2/2}$ as $x\to\infty$.
+		
+		\section*{13. Absorbing-Chain Framework}
+		
+		Reorder states: transient $T$ first, absorbing $A$ last. Then
+		\[P=\begin{pmatrix}Q & R\\ 0 & I\end{pmatrix},\quad Q\!:T\to T,\ \ R\!:T\to A.\]
+		\textbf{Fundamental matrix:} $N=(I-Q)^{-1}=\sum_{k=0}^\infty Q^k$. Then $N_{ij}=\E_i[\#\text{visits to }j]$ for $i,j\in T$.
+		
+		\textbf{Expected time to absorption:} $t=N\b 1$, i.e.\ $t_i=\sum_{j\in T}N_{ij}$.
+		
+		\textbf{Absorption probabilities:} $B=NR$, with $B_{ia}=\PR_i(\text{absorbed in }a)$ for $i\in T$, $a\in A$.
+		
+		Useful for: gambler's ruin, mixed-class limits, any ``probability you eventually reach $j$'' question with multiple recurrent components.
+		
+		\section*{14. Eigendecomposition \& Mixing Rate}
+		
+		If $P=UDU^{-1}$, then $P^n=UD^nU^{-1}$. Eigenvalues $1=\lambda_1\ge|\lambda_2|\ge\cdots$. For irreducible aperiodic finite chain, $|\lambda_2|<1$ and
+		\[\|p^n(i,\cdot)-\pi\|_{TV}\le C|\lambda_2|^n,\]
+		so $|\lambda_2|$ controls the mixing rate. Spectral gap $1-|\lambda_2|$ governs convergence speed. Sanity: $2\times 2$ chain has eigenvalues $1$ and $1-a-b$ -- matches the closed form $p_n-\tfrac{b}{a+b}\propto(1-a-b)^n$.
+		
+		For \emph{reversible} chain ($\pi$ + detailed balance), $P$ is similar to a symmetric matrix $D^{1/2}PD^{-1/2}$ (with $D=\diag(\pi)$) and has all real eigenvalues in $[-1,1]$.
+		
+		\columnbreak
+		
+		\section*{15. Quick-Reference Table}
+		
+		\begin{tabular}{@{}p{0.46\columnwidth}p{0.50\columnwidth}@{}}
+			\textbf{Prompt} & \textbf{Method}\\
+			\hline
+			``Is this a chain?'' & Check $P(X_n\mid X_{n-1})$ self-suff.\\
+			``Transition matrix'' & Enumerate cases; rows sum to $1$\\
+			``$\nu_n$'' & $\nu_0 P^n$\\
+			``Long-run fraction'' & $\pi P=\pi$, normalize\\
+			``Hit prob $\to A$'' & $h_A=1$, $h_i=\sum p(i,j)h_j$\\
+			``Expected time $\to A$'' & $\tau_A=0$, $\tau_i=1+\sum p(i,j)\tau_j$\\
+			``Mean return time'' & $1/\pi_i$ (irreducible)\\
+			``$\lim p^n$ multi-class'' & $h^{(\ell)}_i\cdot\pi^{(\ell)}_j$\\
+			``Bipartite $\lim$'' & Block $P^2$, $\pi$ on each block\\
+			``Use detailed balance?'' & Tree / birth-death / RW on graph\\
+			``Convergent?'' & Irreducible $+$ aperiodic\\
+			``Period?'' & gcd of return-times; self-loop $\Rightarrow d=1$\\
+			``Time to absorption'' & $t=(I-Q)^{-1}\b 1$\\
+			``Absorption probs'' & $B=(I-Q)^{-1}R$\\
+			``Mixing rate'' & $|\lambda_2|^n$ decay\\
+			``BM increment var'' & $t-s$\\
+			``Sum of normals'' & $N(\sum\mu,\sum\sigma^2)$ if indep\\
+			``Tail of $Z$'' & Mills: $\sim\phi(x)/x$\\
+		\end{tabular}
+		
+		\section*{16. Probability \& Algebra Toolbox}
+		
+		$\E[g(X)]=\sum_x g(x)p(x)$ or $\int g(x)f(x)dx$. Linearity always.\\
+		$\Var(X)=\E[X^2]-(\E X)^2$, $\Cov(X,Y)=\E[XY]-\E X\E Y$.\\
+		\textbf{Conditional:} $\E[X]=\E[\E[X\mid Y]]$, $\PR(A)=\sum_i\PR(A\mid B_i)\PR(B_i)$.\\
+		\textbf{Geometric series:} $\sum_{k=0}^{n-1}r^k=\frac{1-r^n}{1-r}$, $\sum_{k=0}^\infty r^k=\frac{1}{1-r}\ (|r|<1)$.\\
+		\textbf{Harmonic:} $H_n=\sum_{k=1}^n 1/k\approx\ln n+\gamma$.\\
+		\textbf{Indicator trick:} $\E[\#\text{visits to }j]=\sum_{n=0}^\infty p^n(i,j)$. Transient $\Leftrightarrow$ this sum is finite.\\
+		\textbf{Hypergeometric:} $\PR(X=k)=\binom{K}{k}\binom{N-K}{n-k}/\binom{N}{n}$, mean $nK/N$.
+		
+		\section*{17. Numpy Snippets}
+		
+		\textbf{Stationary distribution:}\\
+		\texttt{n=P.shape[0]}\\
+		\texttt{A=np.vstack([P.T-np.eye(n),}\\
+		\texttt{\ \ \ \ \ \ \ \ \ \ \ \ \ \ np.ones(n)])}\\
+		\texttt{b=np.append(np.zeros(n),1)}\\
+		\texttt{pi=np.linalg.lstsq(A,b,}\\
+		\texttt{\ \ \ \ rcond=None)[0]}
+		
+		\textbf{$n$-step distribution:}\\
+		\texttt{nu=nu0 @ np.linalg.}\\
+		\texttt{\ \ \ \ matrix\_power(P,n)}
+		
+		\textbf{Hit prob into class $A$:}\\
+		\texttt{Q=P[T][:,T]; R=P[T][:,A]}\\
+		\texttt{N=np.linalg.inv(}\\
+		\texttt{\ \ \ \ np.eye(len(T))-Q)}\\
+		\texttt{B=N@R}\quad\#\,absorption probs\\
+		\texttt{t=N@np.ones(len(T))}\quad\#\,times
+		
+		\textbf{Eigenvalues / mixing:}\\
+		\texttt{w,v=np.linalg.eig(P.T)}\\
+		\texttt{lam2=sorted(np.abs(w))[-2]}
+		
+		\section*{18. Last-Minute Sanity Checks}
+		
+		\begin{itemize}
+			\item Each row of $P$ sums to 1.
+			\item Stationary $\pi$ has $\pi_i\ge 0$, $\sum\pi_i=1$.
+			\item Irreducible chain $\Rightarrow$ $\pi_i>0$ strictly.
+			\item Multi-class chain $\Rightarrow$ $\pi$ on recurrent set.
+			\item Limit matrix: transient column $=0$.
+			\item Detailed balance check: re-do on $\ge 1$ extra edge.
+			\item Hit-prob system: $h=1$ on target, $h=0$ on competing closed sets.
+			\item BM: any normal-increment problem reduces to ``$N(0,\Delta t)$''.
+		\end{itemize}
+		
+	\end{multicols*}
+\end{document}

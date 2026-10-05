@@ -1,0 +1,478 @@
+\documentclass[11pt,landscape]{article}
+
+%===========================================================
+% XeLaTeX setup
+%===========================================================
+\usepackage{fontspec}
+\setmainfont{Latin Modern Roman}
+
+%===========================================================
+% Page layout
+%===========================================================
+\usepackage[paper=letterpaper,left=0.14in,right=0.14in,top=0.14in,bottom=0.14in]{geometry}
+\usepackage{multicol}
+\raggedcolumns
+\setlength{\columnsep}{0.06in}
+\setlength{\columnseprule}{0.25pt}
+\setlength{\multicolsep}{0.05em}
+
+%===========================================================
+% Colors
+%===========================================================
+\usepackage[table]{xcolor}
+\definecolor{sectioncolor}{RGB}{0,102,204}
+\definecolor{tablegray}{gray}{0.93}
+
+%===========================================================
+% Math / tables
+%===========================================================
+\usepackage{amsmath,amssymb,mathtools,booktabs,tabularx,array,makecell}
+\renewcommand{\arraystretch}{0.78}
+\setlength{\tabcolsep}{1.6pt}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+
+%===========================================================
+% Compact lists
+%===========================================================
+\usepackage{enumitem}
+\setlist[itemize]{nosep,leftmargin=*,itemsep=0pt,topsep=0pt,parsep=0pt,partopsep=0pt}
+\setlist[enumerate]{nosep,leftmargin=*,itemsep=0pt,topsep=0pt,parsep=0pt,partopsep=0pt}
+\setlength{\parskip}{0pt}
+
+%===========================================================
+% Section formatting
+%===========================================================
+\usepackage{titlesec}
+\titleformat{\section}{\bfseries\color{sectioncolor}\normalsize}{}{0pt}{}
+\titlespacing*{\section}{0pt}{0.08ex}{0.04ex}
+\titleformat{\subsection}{\bfseries\color{sectioncolor}\footnotesize}{}{0pt}{}
+\titlespacing*{\subsection}{0pt}{0.05ex}{0.02ex}
+\setcounter{secnumdepth}{0}
+
+%===========================================================
+% General compactness
+%===========================================================
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\linespread{0.84}
+
+%===========================================================
+% Macros
+%===========================================================
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\TP}{\mathrm{TP}}
+\newcommand{\TN}{\mathrm{TN}}
+\newcommand{\FP}{\mathrm{FP}}
+\newcommand{\FN}{\mathrm{FN}}
+\newcommand{\sigm}{\sigma}
+\newcommand{\relu}{\mathrm{ReLU}}
+\newcommand{\argmax}{\operatorname*{arg\,max}}
+\newcommand{\argmin}{\operatorname*{arg\,min}}
+
+\begin{document}
+	\tiny
+	
+	%===========================================================
+	% TOP TABLES
+	%===========================================================
+	\noindent
+	\begin{minipage}[t]{0.495\textwidth}
+		\centering
+		\rowcolors{2}{tablegray}{white}
+		\begin{tabularx}{\linewidth}{@{}L{1.58in}L{2.88in}@{}}
+			\toprule
+			\textbf{Trigger} & \textbf{Answer} \\
+			\midrule
+			Dot product meaning & $u\cdot v=\|u\|\|v\|\cos\theta$ \\
+			Matrix product valid & inner dimensions match \\
+			Matrix product shape & $(p\times q)(q\times s)\to p\times s$ \\
+			Remove hidden layer from MLP & linear mapping \\
+			Variance term & predictions change across training sets \\
+			Low train, high val error & overfitting \\
+			Sparse weights & $L_1$ / lasso \\
+			CNN fewer params & weight sharing across positions \\
+			$k$-means update & mean of assigned points \\
+			$k$-means fails on & stretched / non-convex / unequal-density clusters \\
+			1st principal component & direction of max variance \\
+			Curved boundary, few assumptions & $k$-NN \\
+			Global assumptions & overall shape restriction on whole dataset \\
+			Parallelize & train independent pieces simultaneously \\
+			Ensemble averaging helps most & models make different errors \\
+			\bottomrule
+		\end{tabularx}
+	\end{minipage}\hfill
+	\begin{minipage}[t]{0.495\textwidth}
+		\centering
+		\rowcolors{2}{tablegray}{white}
+		\begin{tabularx}{\linewidth}{@{}L{1.58in}L{2.88in}@{}}
+			\toprule
+			\textbf{Trigger} & \textbf{Answer} \\
+			\midrule
+			UCB choosing weakly tried arm & exploration bonus / uncertainty \\
+			Greedy vs $\epsilon$-greedy vs UCB & best mean / random sometimes / best mean + bonus \\
+			Well-calibrated probs & predicted $p$ correct about $p\%$ of time \\
+			SVM key fact & remove non-support vectors: no change \\
+			95/5 class split + 95\% acc & misleading, use recall / precision / F1 \\
+			Negative $R^2$ & worse than mean predictor \\
+			Same acc, different CE loss & different confidence quality \\
+			\textit{t}-SNE reliable info & local neighbors only \\
+			Spurious correlation & predictive maybe, causal no \\
+			Entropy / IG / Gini & impurity / entropy drop / impurity alternative \\
+			Connectivity-based grouping & linked neighbors / dense regions, not centroids \\
+			Curse of dimensionality & distances less meaningful, hurts $k$-NN \\
+			Discounted rewards & earlier reward counts more \\
+			Ring-shaped classes good & $k$-NN, RBF SVM, trees, nets \\
+			Ring-shaped classes bad & logistic, linear SVM, OLS \\
+			\bottomrule
+		\end{tabularx}
+	\end{minipage}
+	
+	\vspace{0.18em}
+	\hrule
+	\vspace{0.12em}
+	
+	\begin{multicols}{4}
+		
+		\section{Linear Algebra / Setup}
+		\begin{itemize}
+			\item Vectors $x\in\R^d$, matrix $X\in\R^{n\times d}$.
+			\item Dot product: $u\cdot v=\sum_i u_iv_i=\|u\|\|v\|\cos\theta$.
+			\item Norms: $\|x\|_2=\sqrt{\sum_i x_i^2}$, $\|w\|_1=\sum_j|w_j|$.
+			\item Matrix-vector: $\hat y=Xw$, and $\hat y_i=x^{(i)}\cdot w$.
+			\item If $A\in\R^{p\times q}, B\in\R^{r\times s}$, then $AB$ exists iff $q=r$.
+			\item If valid, $AB$ has shape $p\times s$.
+			\item Transpose rule: $(AB)^T=B^TA^T$.
+		\end{itemize}
+		
+		\section{Regression / GD}
+		\begin{itemize}
+			\item Linear model: $\hat y=w^Tx+b$.
+			\item MSE: $\frac{1}{n}\sum_{i=1}^n (y_i-\hat y_i)^2$.
+			\item OLS: $\hat w=(X^TX)^{-1}X^Ty$.
+			\item GD: $w^{(t+1)}=w^{(t)}-\eta\nabla_w L(w^{(t)})$.
+			\item $\eta$ too large: overshoot, oscillation, divergence.
+			\item Negative $R^2$: worse than predicting the mean.
+		\end{itemize}
+		
+		\section{Bias / Variance / Fit}
+		\begin{itemize}
+			\item High bias: too simple, underfits.
+			\item High variance: predictions change a lot across training sets.
+			\item Underfitting: high train and high validation error.
+			\item Overfitting: low train error, much higher validation/test error.
+			\item Train = fit parameters, validation = tune hyperparameters, test = final estimate.
+		\end{itemize}
+		
+		\section{Regularization}
+		\begin{itemize}
+			\item Generic form: loss $+\lambda(\text{penalty})$.
+			\item Ridge / $L_2$: $\mathrm{RSS}+\lambda\sum_j w_j^2$.
+			\item Lasso / $L_1$: $\mathrm{RSS}+\lambda\sum_j |w_j|$.
+			\item $L_1$ gives sparsity and feature selection.
+			\item $L_2$ shrinks coefficients but usually not exactly to zero.
+			\item Larger $\lambda$: more bias, less variance, simpler model.
+		\end{itemize}
+		
+		\section{Binary / Multiclass Models}
+		\begin{itemize}
+			\item Linear regression output: $\hat y_i=w^Tx_i+b$.
+			\item Sigmoid: $\sigma(z)=\frac{1}{1+e^{-z}}$.
+			\item Binary class prob: $p_i=\sigma(w^Tx_i+b)$.
+			\item Logit: $\log\frac{p}{1-p}=w^Tx+b$.
+			\item Multiclass score: $s_{ik}=w_k^Tx_i+b_k$.
+			\item Softmax: $p_{ik}=\frac{e^{s_{ik}}}{\sum_{j=1}^K e^{s_{ij}}}$.
+			\item Predict class: $\hat y_i=\argmax_k s_{ik}$.
+		\end{itemize}
+		
+		\section{Loss / Accuracy / Calibration}
+		\begin{itemize}
+			\item Squared loss: $\frac{1}{n}\sum_i (y_i-\hat y_i)^2$.
+			\item Binary CE: $-\frac{1}{n}\sum_i \left[y_i\log p_i+(1-y_i)\log(1-p_i)\right]$.
+			\item Multiclass CE: $-\frac{1}{n}\sum_i\sum_k y_{ik}\log p_{ik}$.
+			\item Accuracy: $\frac{\TP+\TN}{\TP+\TN+\FP+\FN}$.
+			\item Precision: $\frac{\TP}{\TP+\FP}$.
+			\item Recall: $\frac{\TP}{\TP+\FN}$.
+			\item F1: $\frac{2PR}{P+R}$.
+			\item Same accuracy, different loss: same right/wrong, different confidence.
+			\item Well-calibrated: if model predicts $p$, it is right about $p\%$ of the time.
+		\end{itemize}
+		
+		\section{Imbalanced Data}
+		\begin{itemize}
+			\item 95\% class A, 5\% class B: always predicting A gives 95\% accuracy.
+			\item Accuracy can hide complete failure on minority class.
+			\item Better metrics: confusion matrix, precision, recall, F1, class-specific recall, PR curve.
+			\item Phrase: ``model may just predict majority class every time.''
+		\end{itemize}
+		
+		\section{$k$-NN}
+		\begin{itemize}
+			\item Predict from nearby points, no explicit training.
+			\item Good for highly curved / irregular boundaries.
+			\item Minimal global assumptions.
+			\item Sensitive to scaling and high dimension.
+			\item Curse of dimensionality: in high dimension, distances become less informative.
+		\end{itemize}
+		
+		\section{Neural Nets / CNNs}
+		\begin{itemize}
+			\item Hidden-layer MLP: nonlinear map. Remove hidden layer $\Rightarrow$ linear mapping.
+			\item ReLU: $\relu(x)=\max(0,x)$.
+			\item Sigmoid derivative: $\sigma'(x)=\sigma(x)(1-\sigma(x))$.
+			\item Tanh derivative: $(\tanh x)'=1-\tanh^2 x$.
+			\item CNNs use fewer parameters because filters are reused across spatial locations.
+			\item Key phrase: weight sharing.
+		\end{itemize}
+		
+		\section{Decision Trees}
+		\begin{itemize}
+			\item Recursive partitioning model, leaf predicts majority class.
+			\item Criteria: entropy, information gain, Gini.
+			\item Entropy: $H=-\sum_k p_k\log p_k$.
+			\item Gini: $1-\sum_k p_k^2$.
+			\item Information gain = parent entropy $-$ weighted child entropy.
+			\item Entropy and Gini often choose similar splits.
+			\item Entropy can be a bit more sensitive near pure nodes.
+			\item Bigger tree: lower bias, higher variance.
+		\end{itemize}
+		
+		\section{Tree Misclassification / Pruning}
+		\begin{itemize}
+			\item Leaf mistakes = total in leaf $-$ majority-class count.
+			\item Tree misclassification rate = total mistakes / total samples.
+			\item Count leaf nodes only, not internal splits.
+			\item Cost-complexity pruning: $\mathrm{Cost}(T)=\mathrm{error}(T)+\lambda L(T)$.
+			\item Compare old cost vs new cost directly.
+			\item Prune if new cost $<$ old cost.
+			\item Quick rule: prune if error increase $< \lambda \cdot$ leaves removed.
+		\end{itemize}
+		
+		\section{Bagging / RF / Boosting}
+		\begin{itemize}
+			\item Bagging: bootstrap many trees, average or vote. Main effect: lower variance.
+			\item Random forest = bagging + random subset of features at each split.
+			\item RF usually lower variance than plain bagging because trees are less correlated.
+			\item RF parallelizes well: trees are independent.
+			\item Boosting: sequentially trains weak learners to correct earlier mistakes.
+			\item Boosting parallelizes poorly: later trees depend on earlier trees.
+			\item Boosting is more likely to overfit as \# trees increases.
+			\item Averaging helps most when models make different errors.
+		\end{itemize}
+		
+		\section{SVM}
+		\begin{itemize}
+			\item Finds large-margin decision boundary.
+			\item Support vectors are the points that determine the boundary.
+			\item Non-support vectors do not affect final boundary.
+			\item Remove only non-support vectors $\Rightarrow$ classifier unchanged.
+			\item Linear SVM: linear boundary.
+			\item RBF SVM: nonlinear, good for curved boundaries.
+		\end{itemize}
+		
+		\section{Unsupervised Learning}
+		\begin{itemize}
+			\item No labels, discover structure.
+			\item Applications: customer segmentation, anomaly detection, grouping similar users / products.
+			\item Phrase: ``there are no ground-truth labels, so the goal is to discover natural structure.''
+		\end{itemize}
+		
+		\section{$k$-Means}
+		\begin{itemize}
+			\item Repeat: assign each point to nearest centroid, then update centroid to cluster mean.
+			\item Update formula: $\mu_k=\frac{1}{|C_k|}\sum_{x_i\in C_k}x_i$.
+			\item Works best for compact, spherical, similarly sized clusters.
+			\item Struggles on stretched, curved, non-convex, unequal-density groups.
+			\item Centroid-based, not connectivity-based.
+		\end{itemize}
+		
+		\section{Connectivity-Based Clustering}
+		\begin{itemize}
+			\item Group points because they are linked through neighbors / dense regions.
+			\item Think linked structure, not nearest centroid.
+			\item Good for irregular shapes.
+			\item Hierarchical agglomerative is naturally more connectivity-based than $k$-means.
+		\end{itemize}
+		
+		\section{PCA}
+		\begin{itemize}
+			\item Principal components are orthogonal directions of high variance.
+			\item First PC = direction of maximum projected variance.
+			\item Larger eigenvalue $\lambda$ means more variance explained.
+			\item PCA is for variance compression, not class separation.
+			\item Safe interpretation: top PCs explain more variance.
+		\end{itemize}
+		
+		\section{\textit{t}-SNE}
+		\begin{itemize}
+			\item Nonlinear visualization method for high-dimensional data.
+			\item Preserves local neighborhood structure.
+			\item Does not reliably preserve global distances or cluster spacing.
+			\item Safe claim: close in 2D $\Rightarrow$ likely neighbors in original space.
+			\item Unsafe claim: far apart in 2D $\Rightarrow$ must be far apart originally.
+		\end{itemize}
+		
+		\section{Spurious Correlation / Causality}
+		\begin{itemize}
+			\item Predictive relationship may be non-causal.
+			\item Examples: wolf vs husky with snow, drownings vs ice cream sales.
+			\item Problem: model learns shortcut and generalizes poorly when environment changes.
+			\item Phrase: ``predictive in observed data, but not causal.''
+		\end{itemize}
+		
+		\section{Bandits / RL}
+		\begin{itemize}
+			\item Greedy: choose highest current estimated reward.
+			\item $\epsilon$-greedy: greedy most of the time, random with probability $\epsilon$.
+			\item UCB: choose high mean reward + uncertainty bonus.
+			\item Weakly tried arm chosen despite worse mean $\Rightarrow$ think UCB.
+		\end{itemize}
+		
+		\section{Discounted Reward}
+		\begin{itemize}
+			\item Return: $G=r_0+\gamma r_1+\gamma^2 r_2+\cdots$.
+			\item With $\gamma=0.5$: one step later gets $0.5$, two steps later $0.25$, three steps later $0.125$.
+			\item Tiny example: $1$ at $t+1$ and $1$ at $t+2$ gives $0.5+0.25=0.75$.
+		\end{itemize}
+		
+		\section{Routing Triggers}
+		\begin{itemize}
+			\item Numeric target $\rightarrow$ linear regression
+			\item Binary label $\rightarrow$ logistic regression
+			\item Multiclass label $\rightarrow$ softmax classifier
+			\item No labels, find compact groups $\rightarrow$ $k$-means
+			\item No labels, preserve variance $\rightarrow$ PCA
+			\item No labels, inspect local neighborhoods in 2D $\rightarrow$ \textit{t}-SNE
+			\item Highly curved boundary $\rightarrow$ $k$-NN, RBF SVM, trees, nets
+			\item Strong tabular classifier, independent trees $\rightarrow$ random forest
+			\item Strong tabular classifier, sequential correction $\rightarrow$ boosting
+			\item Need interpretability $\rightarrow$ decision tree
+			\item Image spatial patterns $\rightarrow$ CNN
+			\item Explore vs exploit $\rightarrow$ bandits / UCB
+			\item Honest probabilities $\rightarrow$ calibration
+		\end{itemize}
+		
+		\section{Graph / Metric Diagnostics}
+		\begin{itemize}
+			\item Train loss low, val loss high $\rightarrow$ overfitting
+			\item Train and val both high $\rightarrow$ underfitting
+			\item Loss oscillates wildly $\rightarrow$ learning rate too large
+			\item $R^2=1$ perfect fit, $R^2=0$ mean baseline, $R^2<0$ worse than baseline
+			\item High acc on imbalanced data $\rightarrow$ check recall / precision / F1
+			\item Same acc, lower CE $\rightarrow$ better probability outputs
+		\end{itemize}
+		
+		\section{Common Confusion Traps}
+		\begin{itemize}
+			\item PCA $\neq$ clustering
+			\item \textit{t}-SNE $\neq$ reliable global distances
+			\item Bagging $\neq$ boosting
+			\item Calibration $\neq$ accuracy
+			\item $L_1 \neq L_2$
+			\item Logistic regression $\neq$ linear regression
+			\item Random forest $\neq$ single decision tree
+			\item Support vectors $\neq$ all training samples
+			\item Connectivity-based clustering $\neq$ centroid-based clustering
+		\end{itemize}
+		
+		\section{Ultra-Short Memory Hooks}
+		\begin{itemize}
+			\item Dot product = angle
+			\item Matrix product = inner match, outer shape
+			\item Variance = instability
+			\item Overfit = train good, val bad
+			\item $L_1$ = sparse
+			\item CNN = shared weights
+			\item $k$-means = means
+			\item PCA = max variance
+			\item RF = bagging + random features
+			\item Boosting = sequential correction
+			\item SVM = support vectors matter
+			\item UCB = uncertainty bonus
+			\item Calibration = honest probabilities
+			\item \textit{t}-SNE = local only
+			\item High dimension = distances weaken
+		\end{itemize}
+		
+	\end{multicols}
+	
+	\vspace{0.15em}
+	\hrule
+	\vspace{0.15em}
+	
+	%===========================================================
+	% FULL-WIDTH TABLES
+	%===========================================================
+	
+	\section{Model Summary Table}
+	\rowcolors{2}{tablegray}{white}
+	\begin{tabularx}{\linewidth}{@{}L{1.05in}L{0.7in}L{1.15in}L{1.5in}L{2.45in}@{}}
+		\toprule
+		\textbf{Model} & \textbf{Type} & \textbf{Loss / Rule} & \textbf{Best for} & \textbf{Notes / traps} \\
+		\midrule
+		Linear regression & Sup & MSE & numeric prediction & linear output $\hat y=w^Tx+b$ \\
+		Logistic regression & Sup & binary CE & binary class, linear boundary & sigmoid output, poor for ring data \\
+		Softmax classifier & Sup & multiclass CE & multiclass labels & one score per class \\
+		$k$-NN & Sup & distance + vote & small data, curved boundary, few assumptions & suffers in high dimension, scaling matters \\
+		Decision tree & Sup & Gini / entropy / IG & interpretable rule splits & high variance, can overfit \\
+		Random forest & Sup & ensemble vote & strong tabular prediction & independent trees, parallelizable, lower variance \\
+		Boosted trees & Sup & sequential correction & very strong tabular prediction & less parallelizable, can overfit sooner \\
+		Linear SVM & Sup & max-margin & linear separation & support vectors matter \\
+		RBF SVM & Sup & max-margin in kernel space & nonlinear curved boundary & good for ring-shaped classes \\
+		Neural net / MLP & Sup & GD on chosen loss & flexible nonlinear mapping & unstable if learning rate too large \\
+		CNN & Sup & GD on chosen loss & image / spatial structure & fewer params due to weight sharing \\
+		$k$-means & Unsup & minimize within-cluster SSE & compact spherical clusters & centroid = mean, poor for crescents \\
+		Hierarchical clustering & Unsup & linkage rule & connectivity / nested grouping & not centroid-based \\
+		PCA & Unsup & maximize projected variance & dimension reduction & linear, variance not labels \\
+		\textit{t}-SNE & Unsup & neighborhood-preserving map & 2D visualization & local structure only, global spacing unreliable \\
+		Bandits / UCB & RL & reward + exploration & explore/exploit decisions & UCB favors uncertain arms \\
+		\bottomrule
+	\end{tabularx}
+	
+	\vspace{0.2em}
+	
+	\section{Metrics / Routing Table}
+	\rowcolors{2}{tablegray}{white}
+	\begin{tabularx}{\linewidth}{@{}L{2.1in}L{1.55in}L{3.5in}@{}}
+		\toprule
+		\textbf{Situation / goal} & \textbf{Route to} & \textbf{Why} \\
+		\midrule
+		Need numeric prediction & linear regression & continuous target \\
+		Need binary class probability & logistic regression & sigmoid gives binary probability \\
+		Need multiclass probabilities & softmax classifier & one probability per class \\
+		No labels, preserve variance & PCA & linear dimension reduction by variance \\
+		No labels, group similar customers & $k$-means or hierarchical clustering & segmentation without labels \\
+		Need 2D visualization of local neighborhoods & \textit{t}-SNE & local neighborhoods preserved better than global spacing \\
+		Need strong tabular classifier with independent trees & random forest & trees train independently, easy to parallelize \\
+		Need very strong tabular accuracy via sequential correction & boosting & each learner fixes earlier mistakes \\
+		Boundary highly curved, dimension modest & $k$-NN or RBF SVM & flexible nonlinear decision boundary \\
+		Need interpretability & decision tree & explicit if-then split structure \\
+		Need honest probabilities & calibration / cross-entropy awareness & probability quality, not just accuracy \\
+		Severely imbalanced data & precision, recall, F1, confusion matrix & accuracy may be misleading \\
+		Feature predicts but is non-causal & spurious correlation warning & may fail when environment changes \\
+		Poorly tried bandit arm chosen & UCB & uncertainty bonus encourages exploration \\
+		High-dimensional distance-based setting & caution with $k$-NN & curse of dimensionality weakens distance meaning \\
+		\bottomrule
+	\end{tabularx}
+	
+	\vspace{0.2em}
+	
+	\section{Tree / Bandit Mini Table}
+	\rowcolors{2}{tablegray}{white}
+	\begin{tabularx}{\linewidth}{@{}L{1.95in}L{4.95in}@{}}
+		\toprule
+		\textbf{Concept} & \textbf{Key fact} \\
+		\midrule
+		Entropy & $H=-\sum_k p_k\log p_k$ \\
+		Gini & $1-\sum_k p_k^2$ \\
+		Information gain & parent entropy $-$ weighted child entropy \\
+		Leaf misclassification & leaf total $-$ majority class count \\
+		Tree cost-complexity & $\mathrm{Cost}(T)=\mathrm{error}(T)+\lambda L(T)$ \\
+		Pruning check & prune if new cost $<$ old cost \\
+		Greedy bandit & choose current best mean reward \\
+		$\epsilon$-greedy & greedy usually, random sometimes \\
+		UCB & choose estimated reward + uncertainty bonus \\
+		Discounted return & $G=r_0+\gamma r_1+\gamma^2r_2+\cdots$ \\
+		\bottomrule
+	\end{tabularx}
+	
+\end{document}

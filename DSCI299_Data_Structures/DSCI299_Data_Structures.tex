@@ -1,0 +1,877 @@
+\documentclass[6pt,landscape]{article}
+\usepackage{fontspec}
+\setmainfont{Latin Modern Roman}
+\usepackage{geometry}
+% COMPACTION: Reduced margins from 0.3in to 0.2in
+\geometry{left=0.2in,right=0.2in,top=0.2in,bottom=0.2in}
+\usepackage{multicol}
+\raggedcolumns
+% COMPACTION: Reduced column separation from 0.1in to 0.08in
+\setlength{\columnsep}{0.08in}
+\usepackage{xcolor}
+\definecolor{sectioncolor}{RGB}{0,102,204}
+\definecolor{cmdcolor}{RGB}{153,0,0}
+\definecolor{keywordcolor}{RGB}{0,102,0}
+\definecolor{varcolor}{RGB}{102,0,153}
+\definecolor{opcolor}{RGB}{204,102,0}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=sectioncolor,urlcolor=blue,citecolor=sectioncolor}
+\usepackage{enumitem}
+% COMPACTION: Set a smaller fixed left margin for lists
+\setlist{nosep,leftmargin=1.2em,itemsep=0pt,topsep=0pt,partopsep=0pt,parsep=0pt}
+\setlist[2]{leftmargin=1em} % Further reduce margin for nested lists
+\usepackage{titlesec}
+% COMPACTION: Reduced vertical spacing after titles to almost zero
+\titleformat{\section}{\bfseries\color{sectioncolor}\normalsize}{\thesection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{0.15ex}{0.05ex}
+\titleformat{\subsection}{\bfseries\color{sectioncolor}\small}{\thesubsection.}{0.4em}{}
+\titlespacing*{\subsection}{0pt}{0.1ex}{0.05ex}
+\titleformat{\subsubsection}{\bfseries\color{sectioncolor}\footnotesize}{\thesubsubsection.}{0.3em}{}
+\titlespacing*{\subsubsection}{0pt}{0.05ex}{0.03ex}
+\usepackage{amsmath,amsfonts,amssymb,textcomp}
+\usepackage{graphicx,verbatim}
+% COMPACTION: Slightly reduced table row height
+\renewcommand{\arraystretch}{0.75}
+\newcommand{\bigO}[1]{\ensuremath{\mathcal{O}(#1)}}
+\newcommand{\textcode}[1]{\texttt{#1}}
+\newcommand{\cmd}[1]{\textbf{\texttt{\textcolor{cmdcolor}{#1}}}}
+\newcommand{\keyword}[1]{\textbf{\textcolor{keywordcolor}{#1}}}
+\newcommand{\var}[1]{\emph{\textcolor{varcolor}{#1}}}
+\newcommand{\op}[1]{\textit{\textcolor{opcolor}{#1}}}
+\setcounter{secnumdepth}{3}
+\pagestyle{empty}
+% COMPACTION: Slightly reduced global line spacing
+\linespread{0.9}
+
+\begin{document}
+% COMPACTION: Changed from \scriptsize to \tiny for the smallest possible font size
+\tiny
+\begin{multicols}{3}
+
+%-----------------------------------------------------------
+% 1. BASH & LINUX COMMANDS & CONCEPTS
+%-----------------------------------------------------------
+\subsection{Navigation \& FS Basics}\label{sec:navigation}
+\begin{itemize}
+  \item \cmd{pwd}: print the current directory.
+  \item \cmd{cd \var{dir}}, \cmd{cd ..}, \cmd{cd ~}, \cmd{cd -}: change directory to \var{dir}, go up one level, go to home, or return to the previous directory.
+  \item \cmd{ls [-l -a -h] \texttt{path}}: list files in \texttt{path}; use \cmd{-a} to include hidden files and \cmd{-h} to show human‐readable sizes.
+  \item \cmd{mkdir [-p] \texttt{dir}}: create directory \texttt{dir}, with \cmd{-p} making parent folders as needed; \cmd{rmdir \texttt{dir}}: remove the empty directory \texttt{dir}.
+  \item \cmd{cp [-r -u] \texttt{src} \texttt{dst}}: copy files or folders from \texttt{src} to \texttt{dst}; use \cmd{-r} to copy recursively and \texttt{-u} to update only newer files; \cmd{mv \texttt{src} \texttt{dst}}: move or rename \texttt{src} to \texttt{dst}.
+  \item \cmd{find \texttt{path} -name '*.py'}: search recursively under \texttt{path} for files ending in \texttt{.py}.
+  \item Special: \texttt{.}: current directory; \texttt{..}: parent directory; \texttt{\~}: user’s home directory; globbing patterns: \texttt{*} matches zero or more chars; \texttt{?} matches exactly one char; \texttt{[ ]} matches any one of the enclosed chars.
+  \item Typical system utilities (e.g., \texttt{ls}, \texttt{wc}, \texttt{uniq}) live in \texttt{/bin} or \texttt{/usr/bin}; user‐installed scripts often go in \texttt{~/bin}.
+\end{itemize}
+
+
+\subsection{Environment \& Shell Expansions}\label{sec:envshell}
+\begin{itemize}
+  \item Show or set environment variables: \cmd{echo \$VAR} to view a variable; \cmd{export VAR=value} to set it. For example, \texttt{PYTHONPATH} defines where Python looks for modules.
+  \item Arithmetic and command substitution: use \cmd{echo \$((a+1))} (e.g., \cmd{echo \$((5*3))}) to evaluate expressions, and \cmd{\$(cmd)} (e.g., \cmd{files=\$(ls *.py)}) to capture command output into a variable.
+  \item Modify your \texttt{PATH} so the shell finds programs in custom locations, for example \cmd{export PATH=~/bin:\$PATH} makes bash search \texttt{~/bin} before other directories.
+\end{itemize}
+
+\subsection{Viewing \& Comparing Files}\label{sec:viewfiles}
+\begin{itemize}
+  \item \cmd{cat \texttt{file}}: display the entire contents of \texttt{file}; \cmd{more \texttt{file}}: display \texttt{file} one screen at a time; \cmd{less \texttt{file}}: display \texttt{file} interactively with backward/forward navigation.
+  \item \cmd{head [-n N] \texttt{file}}: output the first N lines of \texttt{file}; \cmd{tail [-n N] \texttt{file}}: output the last N lines of \texttt{file}; \cmd{tail -f \texttt{file}}: follow new lines as \texttt{file} grows.
+  \item \cmd{wc [-l -w -m -c] \texttt{file}}: count lines, words, characters, or bytes in \texttt{file}.
+  \item \cmd{diff [-u] \texttt{f1} \texttt{f2}}: compare \texttt{f1} and \texttt{f2} and show a unified diff (e.g., \texttt{3c3} indicates a change at line 3; \texttt{< old} versus \texttt{> new}).
+\end{itemize}
+
+
+\subsection{I/O Redirection \& Pipes}\label{sec:iopipes}
+\begin{tabular}{ll|ll}
+\cmd{>} \texttt{f}      & stdout→overwrite   & \cmd{>>} \texttt{f}    & stdout→append       \\
+\cmd{2>} \texttt{f}    & stderr→overwrite   & \cmd{2>>} \texttt{f}   & stderr→append       \\
+\cmd{\&>} \texttt{f}   & both stdout \& stderr→file & \cmd{2>\&1}      & stderr→stdout       \\
+\cmd{|}                & pipe stdout→stdin  & \cmd{<(cmd)}         & process substitution (input) \\
+\cmd{>(cmd)}           & process substitution & \texttt{\$(cmd)}   & command substitution\\
+\end{tabular}
+
+\noindent (Process substitution \cmd{<(cmd)} and \cmd{>(cmd)} let you treat a command’s output or input as a file.)
+
+\subsection{Text Processing One‐liners}\label{sec:textproc}
+\begin{itemize}
+  \item \cmd{grep [-R -n -i -v -c -E] "\^pattern\$" .} – search files (recursively with \cmd{-R/-r}) for lines matching \texttt{\^pattern\$}, showing line numbers (\cmd{-n}), ignoring case (\cmd{-i}), counting matches (\cmd{-c}), inverting match (\cmd{-v}), or using extended regex (\cmd{-E}).
+  \item \cmd{grep "regex" \texttt{file} > \texttt{out}} – filter lines matching “regex” in \texttt{file} and save them to \texttt{out}.
+  \item \cmd{tr 'a-z' 'A-Z'}; \cmd{tr ',' '\textbackslash t'}; \cmd{tr -s '[:blank:]' '\textbackslash n'} – translate characters: convert lowercase to uppercase, replace commas with tabs, or squeeze consecutive blanks into newlines.
+  \item \cmd{sort -t, -k2,2n \texttt{file}} – sort \texttt{file} by its second column numerically using comma as delimiter; \cmd{sort -r} – reverse the sort order.
+  \item \cmd{uniq -c} – count identical adjacent lines in (sorted) input and prefix each with its occurrence count.
+  \item \cmd{sort \texttt{file} | uniq -c | sort -nr} – produce a descending frequency count of lines in \texttt{file} by sorting, counting with \cmd{uniq -c}, and resorting numerically in reverse.
+  \item \cmd{tr '\textbackslash t' ',' < \texttt{input.txt} > \texttt{new.txt}} – convert all tabs in \texttt{input.txt} to commas and write results to \texttt{new.txt}.
+\end{itemize}
+
+\subsection{Permissions \& Jobs}\label{sec:permjobs}
+\begin{itemize}
+  \item \cmd{chmod u+x \texttt{script.sh}} – add user‐execute permission so you can run \texttt{script.sh}.
+  \item \cmd{jobs}; \cmd{fg \%\var{job}}; \cmd{bg \%\var{job}}; \cmd{Ctrl‐C} – list background jobs, bring a job to the foreground, send it to the background, or terminate the current foreground job.
+  \item \cmd{man \texttt{cmd}} – show the manual page for \texttt{cmd}, using \texttt{[ ]} and \texttt{|} in the syntax examples.
+\end{itemize}
+
+
+\section{Shell Scripting Patterns}\label{sec:shellpatterns}
+\begin{itemize}
+  \item Shebang: \texttt{\#!/usr/bin/env bash}; \texttt{set -euo pipefail} stops the script if any command fails or an undefined variable is used.
+  \item Arguments: \texttt{\$0, \$1, \$@, \$\#, \$?} where \texttt{\$1} is the first argument passed to the script, \texttt{\$\#} is the number of arguments, and \texttt{\$?} is the exit code of the last command.
+  \item Tests: use \texttt{[[ -f \var{f} ]]} to check if file \var{f} exists and \texttt{[[ \$x -gt 0 ]]} to test if the numeric variable \texttt{\$x} is greater than zero.
+  \item \textbf{If statement}: see Code Appendix~\ref{code:A1} for how to write standard conditional logic in a script.
+  \item \textbf{Loops}: see Code Appendix~\ref{code:A14}.
+  \item \textbf{Timing}: see Code Appendix~\ref{code:A15}.
+\end{itemize}
+
+
+%-----------------------------------------------------------
+% 3. PYTHON SCRIPTING & FILE I/O
+%-----------------------------------------------------------
+\section{Python Scripting \& File I/O}\label{sec:pythonscripting}
+
+\subsection{Script Skeleton}\label{sec:skeleton}
+\begin{itemize}
+  \item \textbf{Imports}: \texttt{import sys, os, getopt, time}  
+  \item \textbf{main function}: see Code Appendix~\ref{code:A2} (Section~\ref{sec:code}).  
+  \item \textbf{CLI parsing}: see Code Appendix~\ref{code:A3} (Section~\ref{sec:code}). 
+\end{itemize}
+
+\subsection{File I/O \& Streams}\label{sec:fileio}
+\begin{itemize}
+  \item Open file: see Code Appendix~\ref{code:A16}.
+  \item Modes: \texttt{'r','w','a','rb','wb'}.  (\texttt{'r'} for read, \texttt{'w'} for write, \texttt{'a'} for append, \texttt{'b'} for binary)
+  \item Streams: \texttt{sys.stdin}, \texttt{sys.stdout}, \texttt{sys.stderr}.  
+  \item Read: \texttt{f.readline()}, \texttt{f.readlines()}, \texttt{for l in f:}.  (ways to get data from a file)
+  \item Write: \texttt{f.write("txt\textbackslash n")}; \texttt{f.flush()}.  (send data to a file and force it to appear immediately)
+\end{itemize}
+
+\subsection{Timing \& Profiling}\label{sec:timing}
+\begin{itemize}
+  \item Basic timing in Python: see Code Appendix~\ref{code:A17}.
+  \item Alternatively, use \texttt{cProfile} or the external \cmd{/usr/bin/time}.
+\end{itemize}
+
+%-----------------------------------------------------------
+% 4. ABSTRACT DATA TYPES (ADTs)
+%-----------------------------------------------------------
+\section{Abstract Data Types (ADTs)}\label{sec:adts}
+
+\subsection{ADT Fundamentals}\label{sec:adtfund}
+\begin{itemize}
+  \item \keyword{ADT}: defines what a data structure can do without saying how it does it
+\end{itemize}
+
+\subsection{Stack (LIFO)}\label{sec:stack}
+\begin{itemize}
+  \item \keyword{Definition}: Last‐In, First‐Out: the last item added is the first one removed.
+  \item \textbf{Ops}: \op{push(i)}, \op{pop()}, \op{peek()}, \op{isEmpty()}, \op{size()}: add to top, remove from top, look at top, check if empty, check size.
+  \item \textbf{Implementation}:
+    \begin{itemize}
+      \item \emph{Array}: \bigO{1} amortized \op{push}, \bigO{1} for \op{pop}/\op{peek}/\op{isEmpty}/\op{size} (uses a dynamic array so pushing is usually constant time).
+      \item \emph{Singly Linked List (SLL)}: \bigO{1} \op{push}/\op{pop}/\op{peek}/\op{isEmpty}; \bigO{1}/\bigO{n} \op{size} (nodes let you add/remove from top in constant time; size requires traversal if not tracked).
+    \end{itemize}
+  \item \textbf{Key point}: Delimiter matching via \op{push}/\op{pop}.
+\end{itemize}
+
+\subsection{Singly Linked List}\label{sec:sll}
+\begin{itemize}
+  \item \keyword{Struct}: Node with \emph{v,n}; head=\emph{h}, tail=\emph{t}: each node stores a value and a pointer to the next node, and you keep track of the first (head) and last (tail) nodes.
+  \item \textbf{Node class}: see Code Appendix~\ref{code:A4} for an example of defining a node in Python.
+  \item \textbf{Core operations}:
+    \begin{itemize}
+      \item \op{insH(v)} (\bigO{1}): see Code Appendix~\ref{code:A5}—adds a new node at the front in constant time.
+      \item \op{remH()} (\bigO{1}): see Code Appendix~\ref{code:A6}—removes the front node in constant time.
+      \item \op{insT(v)} (\bigO{1} if tail tracked): see Code Appendix~\ref{code:A7}—adds a new node at the end quickly when you store the tail pointer.
+      \item \op{remT()} (\bigO{n}): see Code Appendix~\ref{code:A8}—removes the last node but requires scanning to find the node before it.
+      \item \op{size(), isEmpty()}: \bigO{1} if you maintain a counter, otherwise \bigO{n} because you must traverse all nodes to count.
+    \end{itemize}
+  \item \textbf{Edge cases}: empty list, singleton list—handle scenarios when there are no nodes or only one node.
+  \item \keyword{No random access}: nodes are not contiguous, so to reach index \(i\) you must traverse from head in \(\bigO{i}\).
+  \item \keyword{Remove tail}: \(\bigO{n}\) because you must scan to find the second‐to‐last node before deleting the tail.
+  \item \textbf{Key point}: identify which operations run in \bigO{1} versus \bigO{n}.
+\end{itemize}
+
+%-----------------------------------------------------------
+\subsection{Queue (FIFO)}\label{sec:queue}
+\begin{itemize}
+  \item \keyword{Definition}: First-In, First-Out – the earliest enqueued element is the first dequeued.
+  \item \textbf{Ops}: \op{enqueue(i)}, \op{dequeue()}, \op{front()}, \op{isEmpty()}, \op{size()}.
+  \item \textbf{Implementations}:
+    \begin{itemize}
+      \item \emph{Circular array} — see Code \ref{code:A18}; all ops amortised \bigO{1}.
+      \item \emph{Singly linked list} with head + tail pointers — strict \bigO{1} \op{enqueue}/\op{dequeue}.
+    \end{itemize}
+  \item \keyword{Bounded queues}: capacity fixed; \op{enqueue} raises overflow when full.
+  \item \keyword{Iterator}: returns elements head→tail.
+  \item \textbf{Trap}: a standard queue does \emph{not} support \op{front(i)} for deep random access.
+\end{itemize}
+
+\subsection{Deque (Double‐Ended Queue)}\label{sec:deque}
+\begin{itemize}
+  \item \keyword{Definition}: supports constant‐time insert and delete at both ends—add or remove nodes from either front or back in \bigO{1}.
+  \item \textbf{Implementation}: use a doubly linked list (DLL) where each node has \emph{p,n} pointers and you track head and tail to allow operations at both ends.
+  \item \textbf{Ops}: \op{addF(i)}, \op{addL(i)}, \op{remF()}, \op{remL()}, \op{isEmpty()}, \op{size()}—all \bigO{1}, since adding or removing at either end is constant time and checking emptiness or size is constant.
+  \item \textbf{Key point}: because each node has a pointer to its predecessor (\emph{p}), you can remove from the tail in \bigO{1}.
+  \item \keyword{Use Deque as Stack}: 
+    \(\op{push}(i) \rightarrow \op{addF}(i),\quad \op{pop}() \rightarrow \op{remF}()\), treating the front as the top of the stack.
+\end{itemize}
+
+\subsection{Priority Queue}\label{sec:pq}
+\begin{itemize}
+  \item \keyword{Definition}: Elements have priority; \op{removeMin()} removes the lowest‐priority item first.
+  \item \textbf{Ops}: \op{ins(i,p)}, \op{min()}, \op{remMin()}—insert with priority, view smallest, remove smallest.
+  \item \textbf{Implementation \& Comparison}:
+    \begin{itemize}
+      \item Unordered linked list: \op{ins} \bigO{1}; \op{min}/\op{remMin} \bigO{n} because you must scan the list.
+      \item Ordered linked list: \op{ins} \bigO{n}; \op{min}/\op{remMin} \bigO{1} since the first node is always the minimum.
+      \item Bounded array of linked lists: all operations \bigO{1} if priorities are in a limited range, using buckets for constant‐time access.
+      \item Min‐heap: \op{ins}/\op{remMin} \bigO{\log n}; \op{min} \bigO{1} using a binary tree stored in an array.
+    \end{itemize}
+  \item \textbf{FIFO tie‐break}: store each element as \((p,i)\) where \(i\) is the insertion counter so items with equal priority come out in insertion order; see Code Appendix~\ref{code:A9}.
+  \item \textbf{Key point}: Trace the steps on a heap array or linked‐list sequence when inserting or removing.
+\end{itemize}
+
+
+\subsection{Map (Hash Map)}\label{sec:map}
+\begin{itemize}
+  \item \keyword{Definition}: Stores unique (key, value) pairs for fast retrieval by key.
+  \item \textbf{Ops}: \op{contains(k)}, \op{get(k)}, \op{put(k,v)}, \op{rem(k)}, \op{size()}, \op{isEmpty()}, \op{keyArr()}, \op{toArr()}, \op{itCreate()}: check if a key exists, retrieve its value, add or remove a pair, get size, check if empty, get all keys, get all pairs, or create an iterator.
+  \item \textbf{Implementation}: Array of buckets (linked lists) with chaining for collisions—each index points to a linked list of \((\text{key,value})\) nodes or is null if empty.
+  \item \textbf{Hash function}: see Code Appendix~\ref{code:A10} for an example of computing a string’s hash code.
+  \item \textbf{Time complexity}:
+    \begin{itemize}
+      \item \keyword{Load factor (LF)}: \(\mathit{LF} = M / N\), where \(M\) is the number of entries and \(N\) is the number of buckets; expected entries per bucket = \(\mathit{LF}\).
+      \item \op{put}, \op{get}, \op{contains}, \op{rem}: \bigO{1} average, \bigO{n} worst (usually constant time unless many items collide).
+      \item \op{keyArr}, \op{toArr}: \bigO{n} to copy all keys or pairs into an array.
+      \item \op{itCreate}: \bigO{1} to start; \(\text{next()}\) amortized \bigO{1}.
+    \end{itemize}
+  \item \textbf{Iterator sketch}: see Code Appendix~\ref{code:A11} for an example of looping through all keys.
+  \item \textbf{Key point}: Illustrate resize, hash index computation, collision handling, and bucket traversal in a hash table.
+  \item \textbf{Applications}: Word frequency counting, magazine‐note problems, anagram grouping.
+  \item \keyword{Good hash function}:
+    \begin{itemize}
+      \item Deterministic: the same input always yields the same hash.
+      \item Uniformly distributes keys across buckets to minimize collisions.
+      \item Fast to compute (e.g., polynomial hashing modulo table size).
+    \end{itemize}
+\end{itemize}
+
+\textbf{Bucket-array organisation.} Each slot stores a pointer to the \keyword{head node} of a singly linked list of \((\var{key},\var{value})\) pairs or \texttt{None} if empty); data never sit directly in the array itself (Code \ref{code:A23}).
+
+\textbf{Load-factor recap.}
+With \(M\) entries and \(N\) buckets, \(\text{LF}=M/N\).
+Rehash when \(M>\alpha N\) to keep expected chain length \(<\alpha\) and retain
+average \bigO{1} performance.
+
+\textbf{Hash-function rules.}
+A hash must be \emph{deterministic}, uniformly distributed, and fast.
+Using \texttt{random(value)} breaks determinism – identical keys land in
+different buckets, destroying look-ups (MC \#9 rationale).
+
+\textbf{toArray() vs itCreate().}
+Call \op{toArray()} when you need indexed/random access to every pair
+(\bigO{n} time \& space).  
+Use \op{itCreate()} for one-pass scans with \bigO{1} extra storage.
+
+
+\subsection{Heap (Min‐Heap)}\label{sec:heap}
+\begin{itemize}
+  \item \keyword{Definition}: Complete binary tree with min‐heap property stored as an array, where each parent is ≤ its children.
+  \item \textbf{Ops}:
+    \begin{itemize}
+      \item \texttt{siftup(i)} (\bigO{\log n}): see Code Appendix~\ref{code:A12}—move a new or adjusted item up until heap order is restored.
+      \item \texttt{siftdown(i)} (\bigO{\log n}): see Code Appendix~\ref{code:A13}—move a node down to reestablish the heap property.
+      \item \op{ins(i)}: append element to the end of the array and run \texttt{siftup} to fix the heap.
+      \item \op{min()}: return \texttt{heap[0]} in \bigO{1} since the smallest item is always at index 0.
+      \item \op{remMin()}: swap the root with the last element, pop the last element, then run \texttt{siftdown(0)} to restore heap order.
+    \end{itemize}
+  \item Build‐heap: in \bigO{n} by running \texttt{siftdown} from \(\lfloor n/2\rfloor\) down to 0 to transform an unordered array into a valid heap.
+  \item \textbf{Key point}: show build steps, trace \texttt{siftup} calls, and prove why build‐heap runs in \bigO{n}.
+\end{itemize}
+
+\textbf{Min-Heap vs Max-Heap}\label{sec:minvsmax}
+\begin{itemize}
+  \item \keyword{Min-Heap}: parent \(\le\) children; \op{remMin()} extracts the
+  smallest key.
+  \item \keyword{Max-Heap}: parent \(\ge\) children; \op{remMax()} extracts the
+  largest key.
+  \item \textbf{Complexities}: both flavours keep \op{insert} and removal in
+  \bigO{\log n}.
+  \item \textbf{Heapsort rationale}: building a \emph{max}-heap lets repeated
+  \op{remMax()} place each maximum at the \emph{end} of the array, producing an
+  ascending in-place sort.  
+  Doing the same with a min-heap yields a descending order (reason for MC \#19).
+  \item \keyword{FIFO tie-break} in a min-heap priority queue: store a
+  monotonically increasing sequence number with each key
+  (Code \ref{code:A21}); equal priorities then dequeue in insertion order
+  (addresses MC \#17).
+\end{itemize}
+
+
+\subsection{Cross‐Cutting Details}\label{sec:crosscut}
+\begin{itemize}
+  \item \keyword{NumPy arrays}: dynamically resize by doubling capacity, so appends are \bigO{1} amortized with occasional \bigO{n} when resizing.
+  \item \keyword{ArrayQueue enqueue cost}: similar to dynamic arrays—if the backing array is full, it reallocates and copies all \(n\) elements, making that operation \bigO{n}, but amortized \bigO{1}.
+  \item \keyword{Custom exceptions}: define your own error types with, e.g., \texttt{class E(Exception): pass}.
+  \item \keyword{Iterator support}: \op{itCreate()} returns an iterator implementing \_\_next\_\_, which raises \texttt{StopIteration} when there are no more elements.
+  \item \texttt{ADTtypemap.py}: provides type‐conversion utilities between Python primitives and ADT types.
+\end{itemize}
+
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Topic} & \textbf{Key Correction (MC \#)}\\\hline
+Queue facts & No deep \op{front(i)} access; iterator = head→tail (4)\\
+toArray vs iterator & Use toArray for random access, iterator for scan (5)\\
+Stable sort & Preserve input order of equal keys (8)\\
+Hash bucket array & Stores list-head pointer per bucket (16)\\
+FIFO in min-heap PQ & Add sequence number to key tuple (17)\\
+Max-heap in heapsort & Removes max to build ascending array (19)\\\hline
+\end{tabular}
+
+
+%-----------------------------------------------------------
+% 5. COMPLEXITY & SORTING
+%-----------------------------------------------------------
+\section{Complexity \& Sorting}\label{sec:complexity}
+
+\subsection{Big‐O Classes}\label{sec:bigoclasses}
+\begin{itemize}
+  \item \bigO{1}, \bigO{\log n}, \bigO{n}, \bigO{n\log n}, \bigO{n^2}: common categories for how runtime grows with input size.
+  \item \textbf{Worst, Average, Amortized}:
+    \begin{itemize}
+      \item Worst: the maximum time an operation takes for input size \(n\).
+      \item Average: the expected time over a distribution of inputs.
+      \item Amortized: the average time per operation over a sequence (e.g., appending to a dynamic array has occasional slow resizes but is \bigO{1} on average).
+    \end{itemize}
+  \item Examples: appending to a dynamic array is amortized \bigO{1}, and binary search is \bigO{\log n}.
+  \item \keyword{Python XOR}: \texttt{b1 \^{} b2} returns True exactly when one of \texttt{b1} or \texttt{b2} is True (exclusive‐or).
+\end{itemize}
+\textbf{Stable sort.}\label{sec:stable}
+An algorithm is \keyword{stable} iff equal-key elements preserve their original
+left-to-right order:  
+\(O_1\!\prec\!O_2\land key(O_1)=key(O_2)\Rightarrow O_1\!\prec\!O_2\) in output.  
+Determinism alone does \emph{not} imply stability.
+
+\subsection{Sorting Comparison}\label{sec:sorting}
+\begin{tabular}{|l|c|c|c|}
+\hline
+\textbf{Sort} & \textbf{Avg./Worst} & \textbf{Stable?} & \textbf{In-place?}\\\hline
+Insertion & $\bigO{n^{2}}/\bigO{n^{2}}$ & Yes & Yes\\
+Selection & $\bigO{n^{2}}/\bigO{n^{2}}$ & No & Yes\\
+Bubble (exchange) & $\bigO{n^{2}}/\bigO{n^{2}}$ & Yes & Yes\\\hline
+Shell  & $\bigO{n^{1.4}}\!$–$\,\bigO{n^{5/3}}$ & No & Yes\\
+Heap & $\bigO{n\log n}/\bigO{n\log n}$ & No\footnotemark[1] & Yes\\
+Quick & $\bigO{n\log n}/\bigO{n^{2}}$ & No\footnotemark[2] & Yes\\
+Merge & $\bigO{n\log n}/\bigO{n\log n}$ & Yes & No\\\hline
+\end{tabular}
+
+
+\begin{itemize}
+  \item \textbf{Stable sorts}: Insertion, Bubble, Merge.  (if two items compare equal, they stay in the same order as in the input)
+  \item \textbf{Unstable sorts}: Selection, Quick, Heap, Shell.  (equal items may be reordered)
+  \item \keyword{QuickSort worst‐case:} when pivot choice yields extremely unbalanced partitions (e.g.\ always picking first or last element on already sorted data).  (leads to \bigO{n^2} behavior when cuts are uneven)
+\end{itemize}
+
+\end{multicols}
+
+%===========================================================
+% 7. Code Index (Appendix)
+%===========================================================
+% COMPACTION: Thinner rule
+% \noindent\rule{\textwidth}{0.2pt}
+\begin{multicols}{5}
+\section{Code Appendix}\label{sec:code}
+
+\subsection{A.1 If Statement}\label{code:A1}
+\begin{verbatim}
+if [[ $x -gt 0 ]]; then echo "pos"
+elif [[ $x -lt 0 ]]; then echo "neg"
+else echo "zero"; fi
+\end{verbatim}
+(choose a branch based on whether x is positive, negative, or zero)
+
+\subsection{A.2 Script Skeleton}\label{code:A2}
+\begin{verbatim}
+def main():
+    # parse args + logic
+if __name__=="__main__":
+    main()
+\end{verbatim}
+(standard way to start a Python script so main() runs when the file is executed)
+
+\subsection{A.3 CLI Parsing}\label{code:A3}
+\begin{verbatim}
+import getopt, sys
+try:
+    opts,args=getopt.getopt(sys.argv[1:],"hi:o:")
+except getopt.GetoptError as e:
+    print(e); sys.exit(2)
+for o,a in opts:
+    if o=="-h": pass
+    elif o=="-i": inf=a
+# args
+\end{verbatim}
+(parse command-line options like \texttt{-h} or \texttt{-i <file>} and handle errors)
+
+\subsection{A.4 Node Class}\label{code:A4}
+\begin{verbatim}
+class N:
+    def __init__(self,v):
+        self.v=v; self.n=None
+\end{verbatim}
+(a simple node for a linked list, with a value and a pointer to the next node)
+
+\subsection{A.5 \texttt{insH}}\label{code:A5}
+\begin{verbatim}
+x.n=self.h; self.h=x
+if self.t is None: self.t=x
+\end{verbatim}
+(insert a node at the head; if the list was empty, also set tail)
+
+\subsection{A.6 \texttt{remH}}\label{code:A6}
+\begin{verbatim}
+if self.h is None: raise E
+r=self.h.v; self.h=self.h.n
+if self.h is None: self.t=None
+return r
+\end{verbatim}
+(remove and return the head node; if list becomes empty, clear tail)
+
+\subsection{A.7 \texttt{insT}}\label{code:A7}
+\begin{verbatim}
+x=N(v)
+if self.t is None: self.h=x; self.t=x
+else: self.t.n=x; self.t=x
+\end{verbatim}
+(insert a node at the tail; if list was empty, set head and tail)
+
+\subsection{A.8 \texttt{remT}}\label{code:A8}
+\begin{verbatim}
+if self.h is None: raise E
+if self.h==self.t:
+    r=self.h.v; self.h=self.t=None; return r
+p=self.h
+while p.n!=self.t: p=p.n
+r=self.t.v; p.n=None; self.t=p; return r
+\end{verbatim}
+(remove and return the tail node; find the node before tail to update pointers)
+
+\subsection{A.9 \texttt{realComp}}\label{code:A9}
+\begin{verbatim}
+def cmp(a,b):
+    # a,b=(p,s,i)
+    if a.p<b.p: return True
+    if a.p==b.p: return a.s<b.s
+    return False
+\end{verbatim}
+(compare priority and insertion order so ties go in FIFO order)
+
+\subsection{A.10 \texttt{strHash}}\label{code:A10}
+\begin{verbatim}
+def ph(s,ts):
+    h=0
+    for c in s: h=(h*31+ord(c))%ts
+    return h
+\end{verbatim}
+(compute a simple hash for a string by combining character codes)
+
+\subsection{A.11 \texttt{MapIter}}\label{code:A11}
+\begin{verbatim}
+class MI:
+    def __init__(self,b):
+        self.b=b; self.i=0
+        self.n=self.adv(0)
+    def __next__(self):
+        if self.n is None: raise StopIteration
+        k=self.n.k
+        self.n=self.n.n or self.adv(self.i+1)
+        return k
+\end{verbatim}
+(iterate through all keys in a hash map, advancing through buckets)
+
+\subsection{A.12 \texttt{siftup}}\label{code:A12}
+\begin{verbatim}
+while i>0:
+    p=(i-1)//2
+    if heap[i]<heap[p]:
+        swap(heap,i,p); i=p
+    else: break
+\end{verbatim}
+(move an element at index \texttt{i} upward until the heap property is restored)
+
+\subsection{A.13 \texttt{siftdown}}\label{code:A13}
+\begin{verbatim}
+n=len(heap)
+while True:
+    l=2*i+1; r=2*i+2; m=i
+    if l<n and heap[l]<heap[m]: m=l
+    if r<n and heap[r]<heap[m]: m=r
+    if m!=i: swap(heap,i,m); i=m
+    else: break
+\end{verbatim}
+(move an element at index \texttt{i} downward until the heap property is restored)
+
+\subsection{A.14 Shell Loops}\label{code:A14}
+\begin{verbatim}
+for f in *.py; do echo "$f"; done
+while [[ cond ]]; do # cmds; done
+\end{verbatim}
+(loop over every \texttt{.py} file or repeat commands while condition is true)
+
+\subsection{A.15 Shell Timing}\label{code:A15}
+\begin{verbatim}
+/usr/bin/time -f "%E elap, %MKB mem" prog
+\end{verbatim}
+(run \texttt{prog} and report elapsed time and peak memory use)
+
+\subsection{A.16 Open File (Python)}\label{code:A16}
+\begin{verbatim}
+with open(f, 'r') as f:
+    for l in f: # process l
+\end{verbatim}
+(open a file for reading and loop over each line)
+
+\subsection{A.17 Python Timing}\label{code:A17}
+\begin{verbatim}
+import time
+t0 = time.perf_counter()
+# run code
+dt = time.perf_counter() - t0
+print(f"{dt:.4f}s")
+\end{verbatim}
+(measure elapsed time in seconds for a block of code)
+
+\subsection{A.18 ArrayQueue Skeleton}\label{code:A18}
+\begin{verbatim}
+class ArrayQueue:
+    def __init__(self, cap:int=8):
+        self._a   = [None]*cap   # circular buffer
+        self._f   = 0            # index of front item
+        self._len = 0
+
+    def _resize(self, ncap:int) -> None:
+        b = [None]*ncap
+        for i in range(self._len):
+            b[i] = self._a[(self._f+i) % len(self._a)]
+        self._a, self._f = b, 0
+
+    # O(1) amortised
+    def enqueue(self, x):
+        if self._len == len(self._a):
+            self._resize(2*len(self._a))
+        back = (self._f + self._len) % len(self._a)
+        self._a[back] = x
+        self._len += 1
+
+    # raises EmptyError if empty
+    def dequeue(self):
+        if self._len == 0: raise EmptyError
+        x = self._a[self._f]; self._a[self._f] = None
+        self._f = (self._f + 1) % len(self._a)
+        self._len -= 1
+        return x
+\end{verbatim}
+(\textit{FIFO queue with circular array; all methods $\mathcal O(1)$ amortised.})
+
+\subsection{A.19 reverseStack() via Queue}\label{code:A19}
+\begin{verbatim}
+def reverseStack(st:"ArrayStack") -> None:
+    q = ArrayQueue(st.size())
+    while not st.isEmpty():     # pop → enqueue
+        q.enqueue(st.pop())
+    while not q.isEmpty():      # dequeue → push
+        st.push(q.dequeue())
+\end{verbatim}
+(\textit{Two linear sweeps give in-place stack reversal; matches practice-test code.})
+
+\subsection{A.20 Stable Merge Sort (Python)}\label{code:A20}
+\begin{verbatim}
+def mergesort(a:list) -> list:
+    n = len(a)
+    if n <= 1: return a
+    mid = n//2
+    L = mergesort(a[:mid])
+    R = mergesort(a[mid:])
+    i=j=0; out=[]
+    while i<len(L) and j<len(R):
+        if L[i] <= R[j]:        # '<=' ⇢ stability
+            out.append(L[i]); i += 1
+        else:
+            out.append(R[j]); j += 1
+    out.extend(L[i:]); out.extend(R[j:])
+    return out
+\end{verbatim}
+(\textit{Divide-and-conquer; $\Theta(n\log n)$, stable.})
+
+\subsection{A.21 FIFO Tie-break in Min-Heap PQ}\label{code:A21}
+\begin{verbatim}
+class _PQEntry:
+    __slots__ = ("p","seq","val")
+    def __init__(self, p, seq, val):
+        self.p, self.seq, self.val = p, seq, val
+    def __lt__(self, other):            # min-heap order
+        return (self.p, self.seq) < (other.p, other.seq)
+
+class HeapPrioQueue:
+    def __init__(self):
+        self._h = []; self._seq = 0
+    def insert(self, priority, value):
+        heapq.heappush(self._h,
+                       _PQEntry(priority, self._seq, value))
+        self._seq += 1                  # increments each insert
+\end{verbatim}
+(\textit{Pair priority with monotone sequence ⇒ equal-priority items emerge FIFO.})
+
+\subsection{A.22 Quicksort Partition (1st‐pivot Worst Case)}\label{code:A22}
+\begin{verbatim}
+def quicksort(a:list, lo:int=0, hi:int=None) -> None:
+    if hi is None: hi = len(a)-1
+    if lo >= hi: return
+    p = a[lo]                 # BAD on presorted arrays
+    i, j = lo+1, hi
+    while True:
+        while i<=j and a[i] <= p: i += 1
+        while a[j] > p:       j -= 1
+        if i > j: break
+        a[i],a[j] = a[j],a[i]
+    a[lo],a[j] = a[j],a[lo]   # pivot ↔ split point
+    quicksort(a, lo, j-1); quicksort(a, j+1, hi)
+\end{verbatim}
+(\textit{Choosing first element as pivot on sorted input ⇒ $O(n^{2})$ partitions.})
+
+\subsection{A.23 Bucket‐Array Layout for HashMap}\label{code:A23}
+\begin{verbatim}
+# organisational array 'buckets' ─ chaining
+# idx → head of singly-linked list or None
+buckets : list[Node | None] = [None] * N
+\end{verbatim}
+(\textit{Each bucket holds a listhead; nodes store (key,value,next).})
+
+\subsection{A.24 Polynomial String Hash}\label{code:A24}
+\begin{verbatim}
+def polyHash(s:str, mod:int) -> int:
+    h = 0
+    for ch in s:
+        h = (h*37 + ord(ch)) % mod   # 37 ⇢ small prime base
+    return h
+\end{verbatim}
+(\textit{Deterministic, uniform, $O(|s|)$; adjust base/\,mod for table size.})
+
+\subsection{A.25 printPrioQueue() using toArray()}\label{code:A25}
+\begin{verbatim}
+def printPrioQueue(pq, fd) -> None:
+    for _,s in pq.toArray():     # array of (prio,str) tuples
+        fd.write(f"{s}\n")
+\end{verbatim}
+(\textit{Straight from practice-test spec; array allows indexed access, $O(n)$.})
+
+
+%===========================================================
+% Sorting-algorithm code appendix entries
+%===========================================================
+
+\subsection{A.26 \texttt{selSort}}\label{code:A26}
+\begin{verbatim}
+def sort(a, cmp):
+    i = 0
+    while i < len(a) - 1:
+        k = i
+        j = i + 1
+        while j < len(a):
+            if cmp(a[j], a[k]) < 0:
+                k = j
+            j += 1
+        if k != i:
+            x = a[i]
+            a[i] = a[k]
+            a[k] = x
+        i += 1
+\end{verbatim}
+(selection sort; not stable; Θ(n²))
+
+\subsection{A.27 \texttt{heapSort}}\label{code:A27}
+\begin{verbatim}
+def ind(val: int) -> int:
+    return val - 1
+
+def sift(b, L, R, cmp):
+    """Establish max-heap on b[L]..b[R]; pre: heap(L+1,R)"""
+    i = L
+    j = 2 * L
+    x = b[ind(L)]
+    if j < R and cmp(b[ind(j)], b[ind(j+1)]) < 0:
+        j += 1
+    while j <= R and cmp(x, b[ind(j)]) < 0:
+        b[ind(i)] = b[ind(j)]
+        b[ind(j)] = x
+        i = j
+        j *= 2
+        if j < R and cmp(b[ind(j)], b[ind(j+1)]) < 0:
+            j += 1
+
+def sort(a, cmp):
+    R = len(a)
+    L = R // 2 + 1
+    while L > 1:
+        L -= 1
+        sift(a, L, R, cmp)        # build max-heap
+    while R > 1:
+        x = a[ind(1)]              # swap root with last
+        a[ind(1)] = a[ind(R)]
+        a[ind(R)] = x
+        R -= 1
+        sift(a, 1, R, cmp)        # restore heap
+\end{verbatim}
+(heap sort; not stable; Θ(n log n))
+
+\subsection{A.28 \texttt{insSort}}\label{code:A28}
+\begin{verbatim}
+def sort(a, cmp):
+    i = 1
+    while i < len(a):
+        x = a[i]
+        j = i - 1
+        while j >= 0 and cmp(a[j], x) > 0:
+            a[j+1] = a[j]
+            j -= 1
+        a[j+1] = x
+        i += 1
+\end{verbatim}
+(insertion sort; stable; Θ(n²))
+
+\subsection{A.29 \texttt{exchSort}}\label{code:A29}
+\begin{verbatim}
+def sort(a, cmp):
+    nexchange = 1
+    i = 1
+    while i < len(a) and nexchange > 0:
+        j = len(a) - 1
+        nexchange = 0
+        while j >= i:
+            if cmp(a[j-1], a[j]) > 0:
+                x = a[j-1]
+                a[j-1] = a[j]
+                a[j] = x
+                nexchange += 1
+            j -= 1
+        i += 1
+\end{verbatim}
+(exchange/bubble sort (improved); stable; Θ(n²), often faster when nearly sorted)
+
+\subsection{A.30 \texttt{shellSort}}\label{code:A30}
+\begin{verbatim}
+import numpy as np
+
+def logb2(size: int) -> int:            # ⌈log2(size)⌉ + 1
+    power = 1
+    mask = 1
+    while size > mask:
+        mask <<= 1
+        power += 1
+    return power
+
+def sort(a, cmp):
+    t = logb2(len(a)) - 1               # number of strides
+    h = np.empty(t, int)
+    h[t-1] = 1
+    for i in range(t-2, -1, -1):
+        h[i] = 2 * h[i+1] + 1           # Pratt sequence 1,3,7,15…
+    for stride in h:
+        for j in range(stride, len(a)):
+            k = j - stride
+            while k >= 0 and cmp(a[k+stride], a[k]) < 0:
+                a[k], a[k+stride] = a[k+stride], a[k]
+                k -= stride
+\end{verbatim}
+(shell sort; not stable; worst-case Θ($n^{5/3}$), typically Θ($n^{1.25}$) or better)
+
+\subsection{A.31 \texttt{quickSortIter}}\label{code:A31}
+\begin{verbatim}
+import numpy as np
+
+class pStruct:                # partition descriptor
+    def __init__(self, l, r):
+        self.left = l
+        self.right = r
+
+def logb2(size) -> int:
+    power = 1
+    mask = 1
+    while size > mask:
+        mask <<= 1
+        power += 1
+    return power
+
+def sort(a, cmp):
+    maxDepth = logb2(len(a))
+    st = np.empty(maxDepth, dtype=object)
+    st[0] = pStruct(0, len(a) - 1)
+    sp = 0                                   # stack pointer
+    while sp >= 0:
+        L, R = st[sp].left, st[sp].right
+        sp -= 1                              # pop
+        while L < R:
+            i, j = L, R
+            x = a[(L+R)//2]                  # pivot
+            while i <= j:
+                while cmp(a[i], x) < 0: i += 1
+                while cmp(x, a[j]) < 0: j -= 1
+                if i <= j:
+                    a[i], a[j] = a[j], a[i]
+                    i += 1; j -= 1
+            if (j-L) < (R-i):                # push larger part
+                if i < R:
+                    sp += 1; st[sp] = pStruct(i, R)
+                R = j
+            else:
+                if L < j:
+                    sp += 1; st[sp] = pStruct(L, j)
+                L = i
+\end{verbatim}
+(iterative quick sort; not stable; average Θ(n log n), worst Θ(n²))
+
+\subsection{A.32 \texttt{mergeSort}}\label{code:A32}
+\begin{verbatim}
+import numpy as np
+scratch = None                  # global work array
+
+def isort(a, cmp):              # insertion for tiny slices
+    for i in range(1, len(a)):
+        x = a[i]; j = i - 1
+        while j >= 0 and cmp(a[j], x) > 0:
+            a[j+1] = a[j]; j -= 1
+        a[j+1] = x
+
+def merge(a, L, M, H, cmp):
+    l1, l2, i = L, M+1, L
+    while l1 <= M and l2 <= H:
+        if cmp(a[l1], a[l2]) <= 0:
+            scratch[i] = a[l1]; l1 += 1
+        else:
+            scratch[i] = a[l2]; l2 += 1
+        i += 1
+    while l1 <= M:
+        scratch[i] = a[l1]; i += 1; l1 += 1
+    while l2 <= H:
+        scratch[i] = a[l2]; i += 1; l2 += 1
+    for i in range(L, H+1):
+        a[i] = scratch[i]
+
+THRESHOLD = 7
+def msort(a, low, high, cmp):
+    size = high - low + 1
+    if size > THRESHOLD:
+        mid = (low + high) // 2
+        msort(a, low, mid, cmp)
+        msort(a, mid+1, high, cmp)
+        merge(a, low, mid, high, cmp)
+    elif size > 1:
+        isort(a[low:high+1], cmp)
+
+def sort(a, cmp):
+    global scratch
+    scratch = np.empty(len(a), dtype=a.dtype)
+    msort(a, 0, len(a)-1, cmp)
+    scratch = None
+\end{verbatim}
+(merge sort; stable; Θ(n log n); switches to insertion sort for tiny slices)
+\end{multicols}
+
+\end{document}
